@@ -9,6 +9,7 @@ import cors from 'cors'
 import { createNewConnection } from './config/connectTypeorm'
 import { HelloResolver } from './resolvers/hello'
 import { redis, sessionConfig } from './config/sessionAndRedisConfig'
+import { UserResolver } from './resolvers/user'
 
 // my imports
 
@@ -31,10 +32,10 @@ const main = async () => {
   // ~ Apollo server setup (used to create graphql middleware for app)
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, redis }), // allows to use em and session throughout app
+    context: ({ req, res }) => ({ req, res, redis }), // allows to use session throughout app
   })
 
   apolloServer.applyMiddleware({ app, cors: false }) // cors is false due to setting up in express

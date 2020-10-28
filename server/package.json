@@ -1,7 +1,7 @@
 {
-  "name": "the_quad_server",
+  "name": "whisker_server",
   "version": "1.0.0",
-  "description": "backend for the quad",
+  "description": "backend for whisker",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/dotenv": "^8.2.0",
     "apollo-server-express": "^2.18.2",
+    "argon2": "^0.27.0",
     "connect-redis": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

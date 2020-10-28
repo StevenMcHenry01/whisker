@@ -10,20 +10,6 @@ import { LoginInput } from '../graphqlTypes/LoginInput'
 export class UserResolver {
   connection = getConnection()
 
-  // ~ Hide others email field resolver
-  // @FieldResolver(() => String)
-  // email(@Root() user: User, @Ctx() { req }: MyContext) {
-  //   // this is the current user so we can show email
-  //   if (req.session?.userId === user.id) {
-  //     return user.email
-  //   }
-
-  //   console.log("helere")
-
-  //   // current user wants to see someone else's email
-  //   return ""
-  // }
-
   // // ~ CHANGE PASSWORD
   // @Mutation(() => UserResponse)
   // async changePassword(

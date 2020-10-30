@@ -2,20 +2,19 @@ import { ObjectType, Field, Int } from 'type-graphql'
 import {
   PrimaryGeneratedColumn,
   Entity,
+  Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Column,
   BaseEntity,
   OneToMany,
 } from 'typeorm'
-import { Cat } from './Cat'
-import { Pic } from './Pic'
-
+import { Message } from './Message'
+import { User } from './User'
 
 @ObjectType()
 @Entity()
 // extend allows base sql commands link find() and insert()
-export class User extends BaseEntity {
+export class ChatSession extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id!: number
@@ -28,23 +27,15 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt = new Date()
 
-  @Field()
-  @Column({ unique: true })
-  username!: string
+  @Field(() => User)
+  @Column({ type: 'int'})
+  user_one!: User
 
-  @Field()
-  @Column({ unique: true })
-  email!: string
+  @Field(() => User)
+  @Column({ type: 'int'})
+  user_two!: User
 
-  // no field property so it cannot be accessed with gql query
-  @Column()
-  password!: string
-
-  @Field(()=>[Cat])
-  @OneToMany(()=>Cat, (cat) => cat.owner)
-  cats: Cat[]
-
-  @Field(()=>[Pic])
-  @OneToMany(()=>Pic, (pic) => pic.user)
-  pics: Pic[]
+  @Field(() => [Message], { nullable: true })
+  @OneToMany(() => Message, (message) => message.chat_session)
+  messages: Message[]
 }

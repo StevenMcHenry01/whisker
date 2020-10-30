@@ -8,8 +8,8 @@ import Loading from './components/utils/Loading'
 
 // Lazy Load Pages
 const Test = lazy(() => import('./pages/Test'))
-const DoesNotExist = lazy(()=> import('./pages/DoesNotExits'))
-const LoginRegister = lazy(()=> import('./pages/LoginRegister'))
+const DoesNotExist = lazy(() => import('./pages/DoesNotExits'))
+const LoginRegister = lazy(() => import('./pages/LoginRegister'))
 
 export const Routes = () => {
   return (
@@ -23,15 +23,21 @@ export const Routes = () => {
       >
         <Switch>
           {/* unprotected */}
-          <Route exact={true} path='/' children={<Test />} />
-          <Route exact={true} path='/login-register' children={<LoginRegister />} />
-          
+          <Route exact={true} path='/'>
+            <Test />
+          </Route>
+          <Route exact={true} path='/login-register'>
+            <LoginRegister />
+          </Route>
+
           {/* protected */}
           {/* <Route exact={true} path='/activities'>
             {user ? <Activities /> : <Redirect to='/' />}
           </Route> */}
 
-          <Route children={<DoesNotExist />} />
+          <Route>
+            <DoesNotExist />
+          </Route>
         </Switch>
       </Suspense>
     </>

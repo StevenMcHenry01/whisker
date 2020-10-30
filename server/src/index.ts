@@ -1,6 +1,7 @@
 // 3rd party imports
 import 'reflect-metadata'
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+import dotenv from 'dotenv'
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 import express from 'express'
 import { buildSchema } from 'type-graphql'
 import session, { SessionOptions } from 'express-session'

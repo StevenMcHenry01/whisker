@@ -11,11 +11,11 @@ import { DeepMap, FieldError, Validate } from 'react-hook-form'
 // My imports
 
 interface InputFieldProps {
-  errors: DeepMap<Record<string, any>, FieldError>,
-  validator: Validate | Record<string, Validate> | undefined,
-  register: any,
-  fieldName: string,
-  type?: string,
+  errors: DeepMap<Record<string, any>, FieldError>
+  validator: Validate | Record<string, Validate> | undefined
+  register: any
+  fieldName: string
+  type?: string
 }
 
 export const InputField: React.FC<InputFieldProps> = ({

@@ -8,14 +8,13 @@ import { InputField } from '../InputField'
 import { validateUsername } from '../validators/username'
 import { validateEmail } from '../validators/email'
 import { validatePassword } from '../validators/password'
-import { useMutation } from '@apollo/client'
-import { REGISTER } from '../../../graphql/mutations/register'
+import { useRegisterMutation } from '../../../generated/graphql'
 
 interface RegisterProps {}
 
 export const Register: React.FC<RegisterProps> = ({}) => {
   const { handleSubmit, errors, register: formRegister, formState } = useForm()
-  const [register] = useMutation(REGISTER)
+  const [register] = useRegisterMutation()
 
   const onSubmit = async (values: any) => {
     const response = await register({ variables: values })

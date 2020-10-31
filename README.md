@@ -1,7 +1,9 @@
 # CLIENT
+
 ### Instalation:
 
 ### Adding new mutations or queries:
+
 In order for mutations and queries to be properly typed, we will be using GraphQL Code Generator with apollo
 
 1. add your .graphql mutation or query to the src/graphql folder (make sure to use aliases)
@@ -10,3 +12,9 @@ In order for mutations and queries to be properly typed, we will be using GraphQ
 4. when using this generated file refer the the hooks it creates eg: "useRegisterMutation()"
 
 # SERVER
+
+1. go into src/index.ts and uncomment the sendEmail() call
+   1. if it console.logs the send then you are all good
+   2. if it errors then the nodemailer test account is probably expired in which case:
+      1. uncomment lines that create test email and console log the info
+      2. replace the auth section of transporter with newly created data

@@ -1,12 +1,13 @@
 import connectRedis from 'connect-redis'
 import Redis from 'ioredis'
 import session from 'express-session'
+import { COOKIE_NAME } from '../utils/constants'
 
 const RedisStore = connectRedis(session)
 export const redis = new Redis(process.env.REDIS_URL)
 
 export const sessionConfig = {
-  name: 'session_cookie', // what will show up in browser
+  name: COOKIE_NAME, // what will show up in browser
   store: new RedisStore({
     client: redis, // telling express session we are using redis
     disableTouch: true, // Tells redis to keep session alive until we say otherwise

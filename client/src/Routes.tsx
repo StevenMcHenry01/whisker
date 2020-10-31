@@ -10,6 +10,8 @@ import Loading from './components/utils/Loading'
 const Test = lazy(() => import('./pages/Test'))
 const DoesNotExist = lazy(() => import('./pages/DoesNotExits'))
 const LoginRegister = lazy(() => import('./pages/LoginRegister'))
+const ChangePassword = lazy(() => import('./pages/ChangePassword'))
+const SendResetEmail = lazy(() => import('./pages/SendResetEmail'))
 
 export const Routes = () => {
   return (
@@ -28,6 +30,14 @@ export const Routes = () => {
           </Route>
           <Route exact={true} path='/login-register'>
             <LoginRegister />
+          </Route>
+
+          <Route path='/change-password/:token'>
+            <ChangePassword />
+          </Route>
+
+          <Route path='/forgot-password'>
+            <SendResetEmail />
           </Route>
 
           {/* protected */}

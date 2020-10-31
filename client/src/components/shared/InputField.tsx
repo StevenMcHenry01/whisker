@@ -15,6 +15,8 @@ interface InputFieldProps {
   validator: Validate | Record<string, Validate> | undefined
   register: any
   fieldName: string
+  fieldLabel: string
+  placeholder: string
   type?: string
 }
 
@@ -23,17 +25,17 @@ export const InputField: React.FC<InputFieldProps> = ({
   register,
   validator,
   fieldName,
+  fieldLabel,
+  placeholder,
   type = 'text',
 }: InputFieldProps) => {
   return (
     <FormControl isInvalid={errors[fieldName]}>
-      <FormLabel htmlFor={fieldName}>
-        {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
-      </FormLabel>
+      <FormLabel htmlFor={fieldName}>{fieldLabel}</FormLabel>
       <Input
         name={fieldName}
         type={type}
-        placeholder={fieldName}
+        placeholder={placeholder}
         ref={register({ validate: validator })}
       />
       <FormErrorMessage>

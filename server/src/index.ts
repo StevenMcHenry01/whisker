@@ -11,6 +11,7 @@ import { createNewConnection } from './config/connectTypeorm'
 import { HelloResolver } from './resolvers/hello'
 import { redis, sessionConfig } from './config/sessionAndRedisConfig'
 import { UserResolver } from './resolvers/user'
+// import { sendEmail } from './utils/sendEmail'
 
 // my imports
 
@@ -18,6 +19,8 @@ const main = async () => {
   createNewConnection()
 
   const app = express()
+
+  // sendEmail('bob@bob.com', 'hello')
 
   // ~ CORS
   app.use(

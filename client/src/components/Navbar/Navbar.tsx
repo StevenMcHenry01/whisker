@@ -1,89 +1,103 @@
 // 3rd party imports
-import React from 'react'
-import { Box, Heading, Flex, Text, Button } from '@chakra-ui/core'
+import React, { useState } from 'react'
+import { Box, Heading, Flex, Button, Text, useDisclosure } from '@chakra-ui/core'
 import styled from 'styled-components'
+import { DesktopLinks } from './DesktopLinks'
+import { Burger } from './Burger'
+import { useLogoutMutation, useMeQuery } from '../../generated/graphql'
+import { isServer } from '../../utils/isServer'
+import { ModalCustom } from '../utils/ModalCustom'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { useApolloClient } from '@apollo/client'
 
 // STYLING
-const DropDownButton = styled(Button)`
-  display: none;
-  background-color: transparent;
-  border: 1px solid white;
-  @media only screen and (max-width: 700px) {
-    display: block;
-  }
-`
-const MenuItems = ({ children }: any) => (
-  <Text mt={{ base: 4, md: 0 }} mr={6} display='block'>
-    {children}
-  </Text>
-)
-
-const Menu = ({ show }: { show: boolean }) => {
-  const MenuStyled = styled(Box)`
-    display: flex;
-    width: auto;
-    @media only screen and (max-width: 700px) {
-      width: 100%;
-      display: ${show ? 'block' : 'none'};
-    }
-  `
-
-  return (
-    <MenuStyled alignItems='center' flexGrow={1}>
-      <MenuItems>Docs</MenuItems>
-      <MenuItems>Examples</MenuItems>
-      <MenuItems>Blog</MenuItems>
-    </MenuStyled>
-  )
-}
-
 const LoginButton = styled(Box)`
-  @media only screen and (max-width: 700px) {
+  @media only screen and (max-width: 768px) {
     display: none;
   }
 `
 
-export const Navbar = (props: any) => {
-  const [show, setShow] = React.useState(false)
-  const handleToggle = () => setShow(!show)
+export const Navbar = (): JSX.Element => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const links = [
+    {
+      displayName: 'home',
+      link: '/',
+    },
+    {
+      displayName: 'page2',
+      link: '/page2',
+    },
+    {
+      displayName: 'page3',
+      link: '/page3',
+    },
+  ]
+
+  const { data, loading } = useMeQuery({
+    skip: isServer(),
+  })
+
+  const apolloClient = useApolloClient()
+
+  const router = useRouter()
+
+  const [logout, { loading: logoutLoading }] = useLogoutMutation()
+
+  const handleLogout = () => {
+    logout()
+    onClose()
+    apolloClient.resetStore()
+    router.push('/')
+  }
 
   return (
     <Flex
-      as='nav'
-      align='center'
-      justify='space-between'
-      padding='1.5rem'
-      bg='teal.500'
-      wrap='wrap'
-      color='white'
-      {...props}
+      as="nav"
+      align="center"
+      justify="space-between"
+      padding="1.5rem"
+      bg="teal.500"
+      color="white"
     >
-      <Flex align='center' mr={5}>
-        <Heading as='h1' size='lg'>
-          Site Title
-        </Heading>
+      <Flex align="center">
+        <Link href="/">
+          <Heading as="h1" size="lg" mr="5">
+            Site Title
+          </Heading>
+        </Link>
+        <DesktopLinks links={links} />
       </Flex>
 
-      {/* The drop down toggle */}
-      <DropDownButton onClick={handleToggle}>
-        <svg
-          fill='white'
-          width='12px'
-          viewBox='0 0 20 20'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <title>Menu</title>
-          <path d='M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z' />
-        </svg>
-      </DropDownButton>
+      <Burger links={links} />
 
-      <Menu show={show} />
+      <ModalCustom
+        modalBody="Are you sure?"
+        danger
+        secondaryButtonText="logout"
+        isOpen={isOpen}
+        onClose={onClose}
+        buttonFunction={handleLogout}
+      />
 
-      <LoginButton>
-        <Button bg='transparent' border='1px'>
-          Login or Register
-        </Button>
-      </LoginButton>
+      {data?.me ? (
+        <Flex align="center">
+          <Flex mr="5">
+            <Text mr="3">👋</Text>
+            <Text>{data.me.username}</Text>
+          </Flex>
+          <Button isLoading={logoutLoading} onClick={onOpen} variant="outline">
+            Logout
+          </Button>
+        </Flex>
+      ) : (
+        <LoginButton>
+          <Button bg="transparent" border="1px">
+            <Link href="/login-register">Login or Register</Link>
+          </Button>
+        </LoginButton>
+      )}
     </Flex>
   )
 }

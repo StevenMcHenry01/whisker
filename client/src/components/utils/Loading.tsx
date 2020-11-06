@@ -9,11 +9,14 @@ const DelayedRender = ({ delay, children }: any) =>
   useDelayedRender(delay)(() => children)
 
 interface LoadingProps {
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   delay?: number
 }
 
-const Loading: React.FC<LoadingProps> = ({ size = 'xl', delay = 500 }: LoadingProps) => {
+const Loading: React.FC<LoadingProps> = ({
+  size = 'xl',
+  delay = 500,
+}: LoadingProps) => {
   return (
     // delay the loading spinner by 500 milliseconds
     <DelayedRender delay={delay}>

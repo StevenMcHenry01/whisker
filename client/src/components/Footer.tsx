@@ -9,17 +9,18 @@ interface FooterProps {}
 
 // STYLING
 const FooterStyled = styled.footer`
-  border-top: 1px solid lightgray;
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  padding: 20px;
+  height: 100px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export const Footer: React.FC<FooterProps> = ({}) => {
   return (
     <FooterStyled>
-      <Text>Footer</Text>
+      <Text>Footer Copyright {new Date().getFullYear()}</Text>
     </FooterStyled>
   )
 }

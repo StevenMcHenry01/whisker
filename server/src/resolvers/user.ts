@@ -96,12 +96,7 @@ export class UserResolver {
     const token = v4()
 
     // store token in redis
-    await redis.set(
-      FORGOT_PASSWORD_PREFIX + token,
-      user.id,
-      'ex',
-      1000 * 60 * 60 * 1
-    ) // one hour token
+    await redis.set(FORGOT_PASSWORD_PREFIX + token, user.id, 'ex', 1000 * 60 * 60 * 1) // one hour token
 
     const html = `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
 
@@ -115,6 +110,7 @@ export class UserResolver {
   me(@Ctx() { req }: ExpressRedisContext): Promise<User | undefined> | null {
     // user is not logged in
     if (req.session) {
+      console.log(req.session)
       if (!req.session.userId) {
         return null
       }
@@ -126,9 +122,7 @@ export class UserResolver {
 
   // ~ REGISTER
   @Mutation(() => UserResponse)
-  async register(
-    @Arg('options') options: RegisterInput
-  ): Promise<UserResponse> {
+  async register(@Arg('options') options: RegisterInput): Promise<UserResponse> {
     const errors = validateRegister(options)
     if (errors) {
       return { errors }
@@ -191,10 +185,7 @@ export class UserResolver {
         ],
       }
     }
-    const vaildatedPassword = await argon2.verify(
-      user.password,
-      options.password
-    )
+    const vaildatedPassword = await argon2.verify(user.password, options.password)
     if (!vaildatedPassword) {
       return {
         errors: [

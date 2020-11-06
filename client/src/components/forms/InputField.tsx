@@ -1,10 +1,5 @@
 // 3rd party imports
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
-} from '@chakra-ui/core'
+import { FormControl, FormLabel, Input, FormErrorMessage } from '@chakra-ui/core'
 import React from 'react'
 import { DeepMap, FieldError, Validate } from 'react-hook-form'
 
@@ -38,9 +33,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         placeholder={placeholder}
         ref={register({ validate: validator })}
       />
-      <FormErrorMessage>
-        {errors[fieldName] && errors[fieldName].message}
-      </FormErrorMessage>
+      <FormErrorMessage>{errors[fieldName] && errors[fieldName].message}</FormErrorMessage>
     </FormControl>
   )
 }

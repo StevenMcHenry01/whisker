@@ -11,7 +11,7 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
   children,
 }: ContentWrapperProps) => {
   return (
-    <Box m='0 auto' maxW='4xl'>
+    <Box m="0 auto" maxW="4xl">
       {children}
     </Box>
   )

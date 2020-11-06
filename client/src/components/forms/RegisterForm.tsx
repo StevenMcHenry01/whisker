@@ -1,14 +1,14 @@
 // 3rd party imports
 import { useForm } from 'react-hook-form'
 import React from 'react'
+import { useRouter } from 'next/router'
 import { Button } from '@chakra-ui/core'
-import { InputField } from '../../shared/InputField'
-
-// My imports
-import { validateUsername } from '../../utils/validators/username'
-import { validateEmail } from '../../utils/validators/email'
-import { validatePassword } from '../../utils/validators/password'
-import { useRegisterMutation } from '../../../generated/graphql'
+import { useRegisterMutation } from '../../generated/graphql'
+import { validateEmail } from '../../validators/email'
+import { validatePassword } from '../../validators/password'
+import { validateUsername } from '../../validators/username'
+import { InputField } from './InputField'
+import { useApolloClient } from '@apollo/client'
 
 interface RegisterFormProps {}
 interface FormValues {
@@ -20,10 +20,15 @@ interface FormValues {
 export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
   const { handleSubmit, errors, register: formRegister, formState } = useForm()
   const [register] = useRegisterMutation()
+  const router = useRouter()
+  const apolloClient = useApolloClient()
 
   const onSubmit = async (values: FormValues) => {
     const response = await register({ variables: values })
-    console.log(response)
+    if (response.data?.register.user) {
+      apolloClient.resetStore()
+      router.push('/')
+    }
   }
 
   return (
@@ -32,35 +37,30 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
         errors={errors}
         validator={validateUsername}
         register={formRegister}
-        fieldName='username'
-        placeholder='username'
-        fieldLabel='Username'
+        fieldName="username"
+        placeholder="username"
+        fieldLabel="Username"
       />
 
       <InputField
         errors={errors}
         validator={validateEmail}
         register={formRegister}
-        fieldName='email'
-        placeholder='email'
-        fieldLabel='Email'
+        fieldName="email"
+        placeholder="email"
+        fieldLabel="Email"
       />
 
       <InputField
         errors={errors}
         validator={validatePassword}
         register={formRegister}
-        fieldName='password'
-        placeholder='password'
-        type='password'
-        fieldLabel='Password'
+        fieldName="password"
+        placeholder="password"
+        type="password"
+        fieldLabel="Password"
       />
-      <Button
-        mt={4}
-        variantColor='teal'
-        isLoading={formState.isSubmitting}
-        type='submit'
-      >
+      <Button mt={4} colorScheme="teal" isLoading={formState.isSubmitting} type="submit">
         Submit
       </Button>
     </form>

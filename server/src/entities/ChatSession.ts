@@ -28,11 +28,11 @@ export class ChatSession extends BaseEntity {
   updatedAt = new Date()
 
   @Field(() => User)
-  @Column({ type: 'int'})
+  @Column({ type: 'int' })
   user_one!: User
 
   @Field(() => User)
-  @Column({ type: 'int'})
+  @Column({ type: 'int' })
   user_two!: User
 
   @Field(() => [Message], { nullable: true })

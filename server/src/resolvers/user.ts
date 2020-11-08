@@ -110,7 +110,6 @@ export class UserResolver {
   me(@Ctx() { req }: ExpressRedisContext): Promise<User | undefined> | null {
     // user is not logged in
     if (req.session) {
-      console.log(req.session)
       if (!req.session.userId) {
         return null
       }

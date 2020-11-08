@@ -1,24 +1,13 @@
 import { FieldError } from 'src/graphqlTypes/FieldError'
 import { RegisterInput } from 'src/graphqlTypes/RegisterInput'
 
-export const validateRegister = (
-  options: RegisterInput
-): [FieldError] | null => {
+export const validateRegister = (options: RegisterInput): [FieldError] | null => {
   // verify email
   if (!options.email.includes('@') || !options.email.includes('.')) {
     return [
       {
         field: 'email',
         message: 'must enter a valid email address.',
-      },
-    ]
-  }
-
-  if (!options.email.includes('.edu')) {
-    return [
-      {
-        field: 'email',
-        message: 'must enter a school email.',
       },
     ]
   }

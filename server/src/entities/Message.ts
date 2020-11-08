@@ -37,5 +37,5 @@ export class Message extends BaseEntity {
   @ManyToOne(() => ChatSession, (chat_session) => chat_session.messages, {
     onDelete: 'CASCADE',
   })
-  chat_session: ChatSession 
+  chat_session: ChatSession
 }

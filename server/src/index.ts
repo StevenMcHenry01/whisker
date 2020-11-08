@@ -11,6 +11,7 @@ import { createNewConnection } from './config/connectTypeorm'
 import { HelloResolver } from './resolvers/hello'
 import { redis, sessionConfig } from './config/sessionAndRedisConfig'
 import { UserResolver } from './resolvers/user'
+import { CatResolver } from './resolvers/cat'
 // import { sendEmail } from './utils/sendEmail'
 
 // my imports
@@ -36,7 +37,7 @@ const main = async () => {
   // ~ Apollo server setup (used to create graphql middleware for app)
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver],
+      resolvers: [HelloResolver, UserResolver, CatResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }), // allows to use session throughout app

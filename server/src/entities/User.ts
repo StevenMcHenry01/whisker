@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from 'type-graphql'
+import { ObjectType, Field, Int, InputType } from 'type-graphql'
 import {
   PrimaryGeneratedColumn,
   Entity,
@@ -10,7 +10,6 @@ import {
 } from 'typeorm'
 import { Cat } from './Cat'
 import { Pic } from './Pic'
-
 
 @ObjectType()
 @Entity()
@@ -40,11 +39,11 @@ export class User extends BaseEntity {
   @Column()
   password!: string
 
-  @Field(()=>[Cat])
-  @OneToMany(()=>Cat, (cat) => cat.owner)
+  @Field(() => [Cat])
+  @OneToMany(() => Cat, (cat) => cat.owner)
   cats: Cat[]
 
-  @Field(()=>[Pic])
-  @OneToMany(()=>Pic, (pic) => pic.user)
+  @Field(() => [Pic])
+  @OneToMany(() => Pic, (pic) => pic.user)
   pics: Pic[]
 }

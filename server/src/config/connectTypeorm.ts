@@ -8,6 +8,7 @@ export const createNewConnection = async () => {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE_NAME,
+    // dropSchema: true,
     synchronize: true,
     logging: true,
     entities: ['dist/entities/*.js'],

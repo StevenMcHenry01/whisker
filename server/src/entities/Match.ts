@@ -1,7 +1,7 @@
 // 3rd party imports
 
 // my imports
-import { Field, Int, ObjectType } from 'type-graphql'
+import { Field, InputType, Int, ObjectType } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -29,11 +29,11 @@ export class Match extends BaseEntity {
   @UpdateDateColumn()
   updatedAt = new Date()
 
-  @Field(()=> Cat)
-  @Column({type: 'int', unique: true})
+  @Field(() => Cat)
+  @Column({ type: 'int', unique: true })
   matched_cat!: Cat
 
   @Field(() => Cat)
   @ManyToOne(() => Cat, (cat) => cat.matches)
-  cat!: Cat 
+  cat!: Cat
 }

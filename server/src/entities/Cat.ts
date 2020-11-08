@@ -1,7 +1,7 @@
 // 3rd party imports
 
 // my imports
-import { Field, Int, ObjectType } from 'type-graphql'
+import { Field, InputType, Int, ObjectType } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -18,7 +18,7 @@ import { Match } from './Match'
 import { Pic } from './Pic'
 import { User } from './User'
 
-@ObjectType() 
+@ObjectType()
 @Entity()
 // extend allows base sql commands link find() and insert()
 export class Cat extends BaseEntity {
@@ -38,12 +38,12 @@ export class Cat extends BaseEntity {
   @Column()
   name!: string
 
-  @Field({ nullable: true })
-  @Column()
+  @Field(() => Int, { nullable: true })
+  @Column({ default: 0 })
   age: number
 
   @Field({ nullable: true })
-  @Column()
+  @Column({ default: 'generic' })
   breed: string
 
   @Field({ nullable: true })
@@ -68,11 +68,11 @@ export class Cat extends BaseEntity {
   })
   cat_likes: Cat[]
 
-  @Field(()=>[Match])
-  @OneToMany(()=>Match, (match) => match.cat)
+  @Field(() => [Match])
+  @OneToMany(() => Match, (match) => match.cat)
   matches: Match[]
 
-  @Field(()=>[Pic])
-  @OneToMany(()=>Pic, (pic) => pic.cat)
+  @Field(() => [Pic])
+  @OneToMany(() => Pic, (pic) => pic.cat)
   pics: Pic[]
 }

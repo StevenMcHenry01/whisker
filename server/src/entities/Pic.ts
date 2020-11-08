@@ -1,7 +1,7 @@
 // 3rd party imports
 
 // my imports
-import { Field, Int, ObjectType } from 'type-graphql'
+import { Field, InputType, Int, ObjectType } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -34,15 +34,15 @@ export class Pic extends BaseEntity {
   @Column()
   url!: string
 
-  @Field(() => User, {nullable: true})
+  @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.pics, {
     onDelete: 'CASCADE',
   })
-  user: User 
+  user: User
 
-  @Field(() => Cat, {nullable: true})
+  @Field(() => Cat, { nullable: true })
   @ManyToOne(() => Cat, (cat) => cat.pics, {
     onDelete: 'CASCADE',
   })
-  cat: Cat 
+  cat: Cat
 }

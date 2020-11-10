@@ -7,9 +7,10 @@ import {
   UpdateDateColumn,
   BaseEntity,
   OneToMany,
+  ManyToOne,
 } from 'typeorm'
+import { Cat } from './Cat'
 import { Message } from './Message'
-import { User } from './User'
 
 @ObjectType()
 @Entity()
@@ -27,15 +28,15 @@ export class ChatSession extends BaseEntity {
   @UpdateDateColumn()
   updatedAt = new Date()
 
-  @Field(() => User)
-  @Column({ type: 'int' })
-  user_one!: User
+  @Field()
+  @Column()
+  catOneId!: number
 
-  @Field(() => User)
-  @Column({ type: 'int' })
-  user_two!: User
+  @Field()
+  @Column()
+  catTwoId!: number
 
   @Field(() => [Message], { nullable: true })
-  @OneToMany(() => Message, (message) => message.chat_session)
+  @OneToMany(() => Message, (message) => message.chatSession, { eager: true })
   messages: Message[]
 }

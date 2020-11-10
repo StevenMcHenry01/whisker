@@ -44,6 +44,6 @@ export class User extends BaseEntity {
   cats: Cat[]
 
   @Field(() => [Pic])
-  @OneToMany(() => Pic, (pic) => pic.user)
+  @OneToMany(() => Pic, (pic) => pic.user, { eager: true })
   pics: Pic[]
 }

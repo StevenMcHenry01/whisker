@@ -1,4 +1,3 @@
-import { Pic } from '../entities/Pic'
 import { Field, InputType, Int } from 'type-graphql'
 
 @InputType()

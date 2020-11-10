@@ -12,6 +12,8 @@ import { HelloResolver } from './resolvers/hello'
 import { redis, sessionConfig } from './config/sessionAndRedisConfig'
 import { UserResolver } from './resolvers/user'
 import { CatResolver } from './resolvers/cat'
+import { MessageResolver } from './resolvers/messaging'
+import { graphqlUploadExpress } from 'graphql-upload'
 // import { sendEmail } from './utils/sendEmail'
 
 // my imports
@@ -31,16 +33,20 @@ const main = async () => {
     })
   )
 
+  // ~ Image upload middleware
+  app.use('/graphql', graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
+
   // ~ Redis setup
   app.use(session(sessionConfig as SessionOptions))
 
   // ~ Apollo server setup (used to create graphql middleware for app)
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, CatResolver],
+      resolvers: [HelloResolver, UserResolver, CatResolver, MessageResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }), // allows to use session throughout app
+    uploads: false,
   })
 
   apolloServer.applyMiddleware({ app, cors: false }) // cors is false due to setting up in express

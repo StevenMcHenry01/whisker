@@ -17,9 +17,12 @@ import { Like } from '../entities/Like'
 import { Match } from '../entities/Match'
 import { LikeResponse } from '../graphqlTypes/LikeResponse'
 import { Dislike } from '../entities/Dislike'
-import { View } from 'typeorm/schema-builder/view/View'
 import { Viewed } from '../entities/Viewed'
 import { DislikeResponse } from '../graphqlTypes/LikeResponse copy'
+import { ChatSession } from '../entities/ChatSession'
+import { GraphQLUpload, FileUpload } from 'graphql-upload'
+import { createWriteStream } from 'fs'
+import mkdirp from 'mkdirp'
 
 @Resolver(Cat)
 export class CatResolver {
@@ -190,8 +193,8 @@ export class CatResolver {
           },
         })
         // match was found! awww
-        // create a match for both catss
         if (matched) {
+          // create a match for both cats
           const matchForLiker = new Match()
           matchForLiker.match = likedCat
           matchForLiker.cat = likerCat
@@ -201,6 +204,18 @@ export class CatResolver {
           matchForLiked.match = likerCat
           matchForLiked.cat = likedCat
           this.connection.manager.save(matchForLiked)
+
+          // create chat session for both cats
+          const chatSession = new ChatSession()
+          chatSession.catOneId = likerCat.id
+          chatSession.catTwoId = likedCat.id
+          this.connection.manager.save(chatSession)
+
+          // save view for matched, liked cat
+          const viewed = new Viewed()
+          viewed.viewerCat = likedCat
+          viewed.viewedId = likerCat.id
+          this.connection.manager.save(viewed)
 
           // return the matched cat for displaying
           return {
@@ -272,5 +287,39 @@ export class CatResolver {
     return {
       success: true,
     }
+  }
+
+  // ~ UPLOAD PHOTO
+  @Mutation(() => Boolean)
+  // @UseMiddleware(isAuth) // guarded resolver
+  async uploadCatPhoto(
+    @Arg('file', () => GraphQLUpload) file: FileUpload,
+    @Ctx() { req }: ExpressRedisContext
+  ): Promise<boolean> {
+    const cat = await Cat.findOne(1)
+    const { createReadStream, filename } = await file
+    // mkdir for user if it doesnt exist
+    await mkdirp(`${__dirname}/../../images/catPhotos/beep/`)
+
+    const filePath = `${__dirname}/../../images/catPhotos/beep/${filename}`
+    const writableStream = createWriteStream(filePath, {
+      autoClose: true,
+    })
+
+    return new Promise((res, rej) => {
+      createReadStream()
+        .pipe(writableStream)
+        .on('finish', async () => {
+          if (cat) {
+            // add to cat's database
+            const photo = new Pic()
+            photo.filePath = filePath
+            photo.cat = cat
+            await this.connection.manager.save(photo)
+          }
+          return res(true)
+        })
+        .on('error', () => rej(false))
+    })
   }
 }

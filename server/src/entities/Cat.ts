@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { ChatSession } from './ChatSession'
 import { Dislike } from './Dislike'
 import { Like } from './Like'
 import { Match } from './Match'
@@ -72,6 +73,6 @@ export class Cat extends BaseEntity {
   viewed: Viewed[]
 
   @Field(() => [Pic])
-  @OneToMany(() => Pic, (pic) => pic.cat)
+  @OneToMany(() => Pic, (pic) => pic.cat, { eager: true })
   pics: Pic[]
 }

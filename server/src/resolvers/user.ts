@@ -15,6 +15,10 @@ import { Cat } from '../entities/Cat'
 import { CatResponse } from '../graphqlTypes/CatResponse'
 import { isAuth } from '../middleware/isAuth'
 import { MeResponse } from '../graphqlTypes/MeResponse'
+import { GraphQLUpload, FileUpload } from 'graphql-upload'
+import mkdirp from 'mkdirp'
+import { createWriteStream } from 'fs'
+import { Pic } from '../entities/Pic'
 
 @Resolver(User)
 export class UserResolver {
@@ -282,5 +286,39 @@ export class UserResolver {
     return {
       cat,
     }
+  }
+
+  // ~ UPLOAD PHOTO
+  @Mutation(() => Boolean)
+  // @UseMiddleware(isAuth) // guarded resolver
+  async uploadUserPhoto(
+    @Arg('file', () => GraphQLUpload) file: FileUpload,
+    @Ctx() { req }: ExpressRedisContext
+  ): Promise<boolean> {
+    const user = await User.findOne(1)
+    const { createReadStream, filename } = await file
+    // mkdir for user if it doesnt exist
+    await mkdirp(`${__dirname}/../../images/userPhotos/beep/`)
+
+    const filePath = `${__dirname}/../../images/userPhotos/beep/${filename}`
+    const writableStream = createWriteStream(filePath, {
+      autoClose: true,
+    })
+
+    return new Promise((res, rej) => {
+      createReadStream()
+        .pipe(writableStream)
+        .on('finish', async () => {
+          if (user) {
+            // add to user's database
+            const photo = new Pic()
+            photo.filePath = filePath
+            photo.user = user
+            await this.connection.manager.save(photo)
+          }
+          return res(true)
+        })
+        .on('error', () => rej(false))
+    })
   }
 }

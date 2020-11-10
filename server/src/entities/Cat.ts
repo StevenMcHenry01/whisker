@@ -1,22 +1,23 @@
 // 3rd party imports
 
 // my imports
-import { Field, InputType, Int, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Dislike } from './Dislike'
+import { Like } from './Like'
 import { Match } from './Match'
 import { Pic } from './Pic'
 import { User } from './User'
+import { Viewed } from './Viewed'
 
 @ObjectType()
 @Entity()
@@ -39,11 +40,11 @@ export class Cat extends BaseEntity {
   name!: string
 
   @Field(() => Int, { nullable: true })
-  @Column({ default: 0 })
+  @Column({ nullable: true })
   age: number
 
   @Field({ nullable: true })
-  @Column({ default: 'generic' })
+  @Column({ nullable: true })
   breed: string
 
   @Field({ nullable: true })
@@ -51,26 +52,24 @@ export class Cat extends BaseEntity {
   sex!: string
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.cats)
+  @ManyToOne(() => User, (user) => user.cats, { eager: true })
   owner!: User
-
-  @ManyToMany(() => Cat)
-  @JoinTable({
-    name: 'cat_likes',
-    joinColumn: {
-      name: 'cat',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'likes',
-      referencedColumnName: 'id',
-    },
-  })
-  cat_likes: Cat[]
 
   @Field(() => [Match])
   @OneToMany(() => Match, (match) => match.cat)
   matches: Match[]
+
+  @Field(() => [Like])
+  @OneToMany(() => Like, (like) => like.likerCat)
+  likes: Like[]
+
+  @Field(() => [Dislike])
+  @OneToMany(() => Dislike, (dislike) => dislike.dislikerCat)
+  dislikes: Dislike[]
+
+  @Field(() => [Viewed])
+  @OneToMany(() => Viewed, (viewed) => viewed.viewerCat)
+  viewed: Viewed[]
 
   @Field(() => [Pic])
   @OneToMany(() => Pic, (pic) => pic.cat)

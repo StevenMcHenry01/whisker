@@ -3,9 +3,9 @@ import { FieldError } from './FieldError'
 import { Cat } from '../entities/Cat'
 
 @ObjectType() // can return
-export class CatResponse {
+export class CatsResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[]
-  @Field(() => Cat, { nullable: true })
-  cat?: Cat
+  @Field(() => [Cat], { nullable: true })
+  cats?: Cat[]
 }

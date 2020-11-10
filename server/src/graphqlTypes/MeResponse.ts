@@ -1,11 +1,11 @@
+import { User } from '../entities/User'
 import { ObjectType, Field } from 'type-graphql'
-import { FieldError } from './FieldError'
 import { Cat } from '../entities/Cat'
 
 @ObjectType() // can return
-export class CatResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[]
+export class MeResponse {
+  @Field(() => User, { nullable: true })
+  user?: User
   @Field(() => Cat, { nullable: true })
-  cat?: Cat
+  selectedCat?: Cat
 }

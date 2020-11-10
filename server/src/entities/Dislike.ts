@@ -15,7 +15,7 @@ import { Cat } from './Cat'
 @ObjectType()
 @Entity()
 // extend allows base sql commands link find() and insert()
-export class Match extends BaseEntity {
+export class Dislike extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id!: number
@@ -24,11 +24,11 @@ export class Match extends BaseEntity {
   @CreateDateColumn()
   createdAt = new Date()
 
-  @Field(() => Cat)
-  @Column(() => Cat)
-  match!: Cat
+  @Field()
+  @Column()
+  dislikesId!: number
 
   @Field(() => Cat)
-  @ManyToOne(() => Cat, (cat) => cat.matches)
-  cat!: Cat
+  @ManyToOne(() => Cat, (cat) => cat.dislikes)
+  dislikerCat!: Cat
 }

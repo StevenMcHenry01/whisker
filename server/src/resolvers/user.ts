@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql'
+import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql'
 import { User } from '../entities/User'
 import argon2 from 'argon2'
 import { getConnection } from 'typeorm'
@@ -11,6 +11,10 @@ import { sendEmail } from '../utils/sendEmail'
 import { ExpressRedisContext } from '../tsTypes/ExpressRedisContext'
 import { validateRegister } from './validators/validateRegister'
 import { NewPasswordInput } from '../graphqlTypes/NewPasswordInput'
+import { Cat } from '../entities/Cat'
+import { CatResponse } from '../graphqlTypes/CatResponse'
+import { isAuth } from '../middleware/isAuth'
+import { MeResponse } from '../graphqlTypes/MeResponse'
 
 @Resolver(User)
 export class UserResolver {
@@ -106,22 +110,31 @@ export class UserResolver {
   }
 
   // ~ ME
-  @Query(() => User, { nullable: true })
-  me(@Ctx() { req }: ExpressRedisContext): Promise<User | undefined> | null {
+  @Query(() => MeResponse, { nullable: true })
+  async me(@Ctx() { req }: ExpressRedisContext): Promise<MeResponse | null> {
     // user is not logged in
     if (req.session) {
       if (!req.session.userId) {
         return null
       }
+      // user is logged in and they have already selected a cat
+      if (req.session.selectedCatId) {
+        return {
+          user: await User.findOne(req.session?.userId),
+          selectedCat: await Cat.findOne(req.session.selectedCatId),
+        }
+      }
     }
-
     // user is logged in so return the user
-    return User.findOne(req.session?.userId)
+    return { user: await User.findOne(req.session?.userId) }
   }
 
   // ~ REGISTER
   @Mutation(() => UserResponse)
-  async register(@Arg('options') options: RegisterInput): Promise<UserResponse> {
+  async register(
+    @Arg('options') options: RegisterInput,
+    @Ctx() { req }: ExpressRedisContext
+  ): Promise<UserResponse> {
     const errors = validateRegister(options)
     if (errors) {
       return { errors }
@@ -155,6 +168,12 @@ export class UserResolver {
         }
       }
     }
+
+    // log in user after changed password
+    if (req.session) {
+      req.session.userId = newUser.id // s
+    }
+
     return { user: newUser }
   }
 
@@ -220,5 +239,48 @@ export class UserResolver {
         resolve(true)
       })
     )
+  }
+
+  // ~ CHOOSE CAT
+  @Mutation(() => CatResponse)
+  @UseMiddleware(isAuth) // guarded resolver
+  async chooseCat(
+    @Arg('id') id: number,
+    @Ctx() { req }: ExpressRedisContext
+  ): Promise<CatResponse> {
+    const user = await User.findOne(parseInt(req.session?.userId))
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'user',
+            message: 'User could not be found',
+          },
+        ],
+      }
+    }
+
+    let cat
+    try {
+      cat = await Cat.findOne(id, { where: { owner: user } })
+    } catch (e) {
+      return {
+        errors: [
+          {
+            field: 'cat',
+            message: 'could not find that cat for that user.\n Error message: ' + e.message,
+          },
+        ],
+      }
+    }
+
+    // store userId in session in redis store
+    if (req.session && cat) {
+      req.session.selectedCatId = cat.id
+    }
+
+    return {
+      cat,
+    }
   }
 }

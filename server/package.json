@@ -16,6 +16,7 @@
     "@types/dotenv": "^8.2.0",
     "apollo-server-express": "^2.18.2",
     "argon2": "^0.27.0",
+    "aws-sdk": "^2.790.0",
     "connect-redis": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

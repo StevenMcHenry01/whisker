@@ -12,7 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ChatSession } from './ChatSession'
 import { Dislike } from './Dislike'
 import { Like } from './Like'
 import { Match } from './Match'
@@ -43,6 +42,18 @@ export class Cat extends BaseEntity {
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
   age: number
+
+  @Field({ nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: true })
+  latitude: number
+
+  @Field({ nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: true })
+  longitude: number
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  bio: number
 
   @Field({ nullable: true })
   @Column({ nullable: true })

@@ -32,7 +32,7 @@ export class Pic extends BaseEntity {
 
   @Field()
   @Column()
-  filePath!: string
+  url!: string
 
   @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.pics, {

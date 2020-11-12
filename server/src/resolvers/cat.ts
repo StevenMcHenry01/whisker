@@ -294,32 +294,31 @@ export class CatResolver {
   // @UseMiddleware(isAuth) // guarded resolver
   async uploadCatPhoto(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
-    @Ctx() { req }: ExpressRedisContext
+    @Ctx() { s3 }: ExpressRedisContext
   ): Promise<boolean> {
     const cat = await Cat.findOne(1)
-    const { createReadStream, filename } = await file
-    // mkdir for user if it doesnt exist
-    await mkdirp(`${__dirname}/../../images/catPhotos/beep/`)
+    const { createReadStream, filename, mimetype } = await file
 
-    const filePath = `${__dirname}/../../images/catPhotos/beep/${filename}`
-    const writableStream = createWriteStream(filePath, {
-      autoClose: true,
-    })
+    const fileStream = createReadStream()
 
-    return new Promise((res, rej) => {
-      createReadStream()
-        .pipe(writableStream)
-        .on('finish', async () => {
-          if (cat) {
-            // add to cat's database
-            const photo = new Pic()
-            photo.filePath = filePath
-            photo.cat = cat
-            await this.connection.manager.save(photo)
-          }
-          return res(true)
-        })
-        .on('error', () => rej(false))
-    })
+    try {
+      if (cat) {
+        const uploadParams = {
+          Bucket: 'whisker',
+          Key: `${cat.id}-${filename}`,
+          Body: fileStream,
+        }
+        const result = await s3.upload(uploadParams).promise()
+        const photo = new Pic()
+        photo.url = result.Location
+        photo.cat = cat
+        await this.connection.manager.save(photo)
+        return true
+      } else {
+        return false
+      }
+    } catch (e) {
+      return false
+    }
   }
 }

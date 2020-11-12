@@ -293,32 +293,31 @@ export class UserResolver {
   // @UseMiddleware(isAuth) // guarded resolver
   async uploadUserPhoto(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
-    @Ctx() { req }: ExpressRedisContext
+    @Ctx() { s3 }: ExpressRedisContext
   ): Promise<boolean> {
     const user = await User.findOne(1)
-    const { createReadStream, filename } = await file
-    // mkdir for user if it doesnt exist
-    await mkdirp(`${__dirname}/../../images/userPhotos/beep/`)
+    const { createReadStream, filename, mimetype } = await file
 
-    const filePath = `${__dirname}/../../images/userPhotos/beep/${filename}`
-    const writableStream = createWriteStream(filePath, {
-      autoClose: true,
-    })
+    const fileStream = createReadStream()
 
-    return new Promise((res, rej) => {
-      createReadStream()
-        .pipe(writableStream)
-        .on('finish', async () => {
-          if (user) {
-            // add to user's database
-            const photo = new Pic()
-            photo.filePath = filePath
-            photo.user = user
-            await this.connection.manager.save(photo)
-          }
-          return res(true)
-        })
-        .on('error', () => rej(false))
-    })
+    try {
+      if (user) {
+        const uploadParams = {
+          Bucket: 'whisker',
+          Key: `${user.id}-${filename}`,
+          Body: fileStream,
+        }
+        const result = await s3.upload(uploadParams).promise()
+        const photo = new Pic()
+        photo.url = result.Location
+        photo.user = user
+        await this.connection.manager.save(photo)
+        return true
+      } else {
+        return false
+      }
+    } catch (e) {
+      return false
+    }
   }
 }

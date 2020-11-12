@@ -14,6 +14,7 @@ import { UserResolver } from './resolvers/user'
 import { CatResolver } from './resolvers/cat'
 import { MessageResolver } from './resolvers/messaging'
 import { graphqlUploadExpress } from 'graphql-upload'
+import AWS from 'aws-sdk'
 // import { sendEmail } from './utils/sendEmail'
 
 // my imports
@@ -36,6 +37,9 @@ const main = async () => {
   // ~ Image upload middleware
   app.use('/graphql', graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
+  // ~ AWS setup
+  const s3 = new AWS.S3({ apiVersion: '2006-03-01' })
+
   // ~ Redis setup
   app.use(session(sessionConfig as SessionOptions))
 
@@ -45,7 +49,7 @@ const main = async () => {
       resolvers: [HelloResolver, UserResolver, CatResolver, MessageResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, redis }), // allows to use session throughout app
+    context: ({ req, res }) => ({ req, res, redis, s3 }), // allows to use session throughout app
     uploads: false,
   })
 

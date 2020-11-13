@@ -40,7 +40,7 @@ export class Cat extends BaseEntity {
   name!: string
 
   @Field(() => Int, { nullable: true })
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   age: number
 
   @Field({ nullable: true })
@@ -53,7 +53,7 @@ export class Cat extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  bio: number
+  bio: string
 
   @Field({ nullable: true })
   @Column({ nullable: true })

@@ -1,10 +1,10 @@
 // 3rd party imports
-import { Box, Button, Text, Link } from '@chakra-ui/core'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useForgotPasswordMutation } from '../../generated/graphql'
 import { validateEmail } from '../../validators/email'
 import { InputField } from './InputField'
+import Link from 'next/link'
 
 // My imports d
 
@@ -25,16 +25,12 @@ export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({}) => {
 
   if (emailSent) {
     return (
-      <Box>
-        <Text fontSize="lg" textAlign="center">
-          Email Sent!
-        </Text>
-        <Box textAlign="center" mt="5">
-          <Link style={{ color: 'blue' }} href="/">
-            Go home
-          </Link>
-        </Box>
-      </Box>
+      <div>
+        <p>Email Sent!</p>
+        <div>
+          <Link href="/">Go home</Link>
+        </div>
+      </div>
     )
   }
 
@@ -49,9 +45,7 @@ export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({}) => {
         fieldLabel="Email to send reset link"
         type="email"
       />
-      <Button mt={4} colorScheme="teal" isLoading={formState.isSubmitting} type="submit">
-        Change Password
-      </Button>
+      <button type="submit">Change Password</button>
     </form>
   )
 }

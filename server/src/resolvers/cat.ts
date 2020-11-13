@@ -47,11 +47,6 @@ export class CatResolver {
       }
     }
 
-    let pics: Pic[] = []
-    if (options.pics) {
-      pics = await Pic.findByIds(options.pics)
-    }
-
     let newCat
     try {
       newCat = new Cat()
@@ -59,7 +54,6 @@ export class CatResolver {
       newCat.breed = options.breed
       newCat.sex = options.sex
       newCat.age = options.age
-      newCat.pics = pics
       newCat.owner = user
       await this.connection.manager.save(newCat)
     } catch (e) {
@@ -124,10 +118,6 @@ export class CatResolver {
     @Arg('options') options: EditCatInput,
     @Ctx() { req, redis }: ExpressRedisContext
   ): Promise<CatResponse> {
-    let pics: Pic[] = []
-    if (options.pics) {
-      pics = await Pic.findByIds(options.pics)
-    }
     let updatedCat
     try {
       await Cat.update({ id: options.id }, { name: options.name })

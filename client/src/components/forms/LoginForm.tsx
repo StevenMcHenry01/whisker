@@ -1,6 +1,5 @@
 // 3rd party imports
 import { useApolloClient } from '@apollo/client'
-import { Box, Button, Link } from '@chakra-ui/core'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useForm } from 'react-hook-form'
@@ -8,6 +7,7 @@ import { useLoginMutation } from '../../generated/graphql'
 import { validateEmailOrUsername } from '../../validators/emailOrUsername'
 import { validatePassword } from '../../validators/password'
 import { InputField } from './InputField'
+import Link from 'next/link'
 
 // My imports
 
@@ -41,7 +41,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({}) => {
         placeholder="email or username"
         fieldLabel="Email or Username"
       />
-      <Box mt={2}>
+      <div>
         <InputField
           errors={errors}
           validator={validatePassword}
@@ -51,15 +51,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({}) => {
           type="password"
           fieldLabel="Password"
         />
-      </Box>
-      <Box mt={1}>
-        <Link style={{ color: 'blue' }} href="/forgot-password">
-          Forgot password?
-        </Link>
-      </Box>
-      <Button mt={4} colorScheme="teal" isLoading={formState.isSubmitting} type="submit">
-        Login
-      </Button>
+      </div>
+      <div>
+        <Link href="/forgot-password">Forgot password?</Link>
+      </div>
+      <button type="submit">Login</button>
     </form>
   )
 }

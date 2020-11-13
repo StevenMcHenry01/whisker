@@ -10,6 +10,10 @@ export class CreateCatInput {
   breed: string
   @Field()
   sex: string
-  @Field(() => [Int], { nullable: true })
-  pics: number[]
+  @Field({ nullable: true })
+  bio: string
+  @Field({ nullable: true })
+  latitude: number
+  @Field({ nullable: true })
+  longitude: number
 }

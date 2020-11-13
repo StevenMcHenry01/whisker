@@ -1,5 +1,12 @@
 query Me {
   me {
-    username
+    user {
+      id
+      username
+    }
+    selectedCat {
+      id
+      name
+    }
   }
 }

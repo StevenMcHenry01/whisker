@@ -1,5 +1,4 @@
 // 3rd party imports
-import { Spinner } from '@chakra-ui/core'
 import React from 'react'
 
 // My imports
@@ -16,7 +15,7 @@ const Loading: React.FC<LoadingProps> = ({ size = 'xl', delay = 500 }: LoadingPr
   return (
     // delay the loading spinner by 500 milliseconds
     <DelayedRender delay={delay}>
-      <Spinner size={size} />
+      <p>Loading...</p>
     </DelayedRender>
   )
 }

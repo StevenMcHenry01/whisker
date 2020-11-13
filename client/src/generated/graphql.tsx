@@ -9,12 +9,26 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
-  me?: Maybe<User>;
+  me?: Maybe<MeResponse>;
+  getCats: CatsResponse;
+};
+
+
+export type QueryGetCatsArgs = {
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type MeResponse = {
+  __typename?: 'MeResponse';
+  user?: Maybe<User>;
+  selectedCat?: Maybe<Cat>;
 };
 
 export type User = {
@@ -34,11 +48,17 @@ export type Cat = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   name: Scalars['String'];
-  age?: Maybe<Scalars['Float']>;
+  age?: Maybe<Scalars['Int']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  bio?: Maybe<Scalars['String']>;
   breed?: Maybe<Scalars['String']>;
   sex?: Maybe<Scalars['String']>;
   owner: User;
   matches: Array<Match>;
+  likes: Array<Like>;
+  dislikes: Array<Dislike>;
+  viewed: Array<Viewed>;
   pics: Array<Pic>;
 };
 
@@ -46,9 +66,32 @@ export type Match = {
   __typename?: 'Match';
   id: Scalars['Int'];
   createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  matched_cat: Cat;
+  match: Cat;
   cat: Cat;
+};
+
+export type Like = {
+  __typename?: 'Like';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  likesId: Scalars['Float'];
+  likerCat: Cat;
+};
+
+export type Dislike = {
+  __typename?: 'Dislike';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  dislikesId: Scalars['Float'];
+  dislikerCat: Cat;
+};
+
+export type Viewed = {
+  __typename?: 'Viewed';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  viewedId: Scalars['Float'];
+  viewerCat: Cat;
 };
 
 export type Pic = {
@@ -61,6 +104,18 @@ export type Pic = {
   cat?: Maybe<Cat>;
 };
 
+export type CatsResponse = {
+  __typename?: 'CatsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  cats?: Maybe<Array<Cat>>;
+};
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserResponse;
@@ -68,6 +123,15 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  chooseCat: CatResponse;
+  uploadUserPhoto: Scalars['Boolean'];
+  createCat: CatResponse;
+  editCat: CatResponse;
+  deleteCat: Scalars['Boolean'];
+  likeCat: LikeResponse;
+  dislikeCat: DislikeResponse;
+  uploadCatPhoto: Scalars['Boolean'];
+  sendMessage: MessageResponse;
 };
 
 
@@ -90,16 +154,55 @@ export type MutationLoginArgs = {
   options: LoginInput;
 };
 
+
+export type MutationChooseCatArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationUploadUserPhotoArgs = {
+  file: Scalars['Upload'];
+};
+
+
+export type MutationCreateCatArgs = {
+  options: CreateCatInput;
+};
+
+
+export type MutationEditCatArgs = {
+  options: EditCatInput;
+};
+
+
+export type MutationDeleteCatArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationLikeCatArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationDislikeCatArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationUploadCatPhotoArgs = {
+  file: Scalars['Upload'];
+};
+
+
+export type MutationSendMessageArgs = {
+  options: MessageInput;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
-};
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
 };
 
 export type NewPasswordInput = {
@@ -118,6 +221,77 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type CatResponse = {
+  __typename?: 'CatResponse';
+  errors?: Maybe<Array<FieldError>>;
+  cat?: Maybe<Cat>;
+};
+
+
+export type CreateCatInput = {
+  name: Scalars['String'];
+  age?: Maybe<Scalars['Float']>;
+  breed?: Maybe<Scalars['String']>;
+  sex: Scalars['String'];
+  bio?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+export type EditCatInput = {
+  id: Scalars['Float'];
+  name?: Maybe<Scalars['String']>;
+  age?: Maybe<Scalars['Float']>;
+  breed?: Maybe<Scalars['String']>;
+  sex?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+export type LikeResponse = {
+  __typename?: 'LikeResponse';
+  errors?: Maybe<Array<FieldError>>;
+  match?: Maybe<Cat>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type DislikeResponse = {
+  __typename?: 'DislikeResponse';
+  errors?: Maybe<Array<FieldError>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type MessageResponse = {
+  __typename?: 'MessageResponse';
+  errors?: Maybe<Array<FieldError>>;
+  chatSession?: Maybe<ChatSession>;
+};
+
+export type ChatSession = {
+  __typename?: 'ChatSession';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  catOneId: Scalars['Float'];
+  catTwoId: Scalars['Float'];
+  messages?: Maybe<Array<Message>>;
+};
+
+export type Message = {
+  __typename?: 'Message';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  body: Scalars['String'];
+  chatSession: ChatSession;
+};
+
+export type MessageInput = {
+  recieverId: Scalars['Float'];
+  body: Scalars['String'];
+};
+
 export type ChangePasswordMutationVariables = Exact<{
   token: Scalars['String'];
   newPassword: Scalars['String'];
@@ -132,6 +306,65 @@ export type ChangePasswordMutation = (
       { __typename?: 'User' }
       & Pick<User, 'username'>
     )> }
+  ) }
+);
+
+export type CreateCatMutationVariables = Exact<{
+  name: Scalars['String'];
+  bio?: Maybe<Scalars['String']>;
+  age?: Maybe<Scalars['Float']>;
+  sex: Scalars['String'];
+  breed?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+}>;
+
+
+export type CreateCatMutation = (
+  { __typename?: 'Mutation' }
+  & { createCat: (
+    { __typename?: 'CatResponse' }
+    & { cat?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'name' | 'breed'>
+      & { owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type EditCatMutationVariables = Exact<{
+  id: Scalars['Float'];
+  name?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  age?: Maybe<Scalars['Float']>;
+  sex?: Maybe<Scalars['String']>;
+  breed?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+}>;
+
+
+export type EditCatMutation = (
+  { __typename?: 'Mutation' }
+  & { editCat: (
+    { __typename?: 'CatResponse' }
+    & { cat?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'id' | 'name' | 'bio' | 'age' | 'sex' | 'latitude' | 'longitude' | 'breed'>
+      & { owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
   ) }
 );
 
@@ -194,14 +427,43 @@ export type RegisterMutation = (
   ) }
 );
 
+export type GetAllCatsQueryVariables = Exact<{
+  id?: Maybe<Scalars['Float']>;
+}>;
+
+
+export type GetAllCatsQuery = (
+  { __typename?: 'Query' }
+  & { getCats: (
+    { __typename?: 'CatsResponse' }
+    & { cats?: Maybe<Array<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'bio' | 'name' | 'latitude' | 'longitude' | 'createdAt' | 'age' | 'sex' | 'breed' | 'id'>
+      & { pics: Array<(
+        { __typename?: 'Pic' }
+        & Pick<Pic, 'url'>
+      )>, owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      ) }
+    )>> }
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'username'>
+    { __typename?: 'MeResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    )>, selectedCat?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'id' | 'name'>
+    )> }
   )> }
 );
 
@@ -241,6 +503,113 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const CreateCatDocument = gql`
+    mutation CreateCat($name: String!, $bio: String, $age: Float, $sex: String!, $breed: String, $latitude: Float, $longitude: Float) {
+  createCat(
+    options: {name: $name, bio: $bio, age: $age, sex: $sex, breed: $breed, latitude: $latitude, longitude: $longitude}
+  ) {
+    cat {
+      name
+      breed
+      owner {
+        username
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateCatMutationFn = Apollo.MutationFunction<CreateCatMutation, CreateCatMutationVariables>;
+
+/**
+ * __useCreateCatMutation__
+ *
+ * To run a mutation, you first call `useCreateCatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCatMutation, { data, loading, error }] = useCreateCatMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      bio: // value for 'bio'
+ *      age: // value for 'age'
+ *      sex: // value for 'sex'
+ *      breed: // value for 'breed'
+ *      latitude: // value for 'latitude'
+ *      longitude: // value for 'longitude'
+ *   },
+ * });
+ */
+export function useCreateCatMutation(baseOptions?: Apollo.MutationHookOptions<CreateCatMutation, CreateCatMutationVariables>) {
+        return Apollo.useMutation<CreateCatMutation, CreateCatMutationVariables>(CreateCatDocument, baseOptions);
+      }
+export type CreateCatMutationHookResult = ReturnType<typeof useCreateCatMutation>;
+export type CreateCatMutationResult = Apollo.MutationResult<CreateCatMutation>;
+export type CreateCatMutationOptions = Apollo.BaseMutationOptions<CreateCatMutation, CreateCatMutationVariables>;
+export const EditCatDocument = gql`
+    mutation EditCat($id: Float!, $name: String, $bio: String, $age: Float, $sex: String, $breed: String, $latitude: Float, $longitude: Float) {
+  editCat(
+    options: {id: $id, name: $name, bio: $bio, age: $age, sex: $sex, breed: $breed, latitude: $latitude, longitude: $longitude}
+  ) {
+    cat {
+      id
+      name
+      bio
+      age
+      sex
+      latitude
+      longitude
+      breed
+      owner {
+        username
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type EditCatMutationFn = Apollo.MutationFunction<EditCatMutation, EditCatMutationVariables>;
+
+/**
+ * __useEditCatMutation__
+ *
+ * To run a mutation, you first call `useEditCatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCatMutation, { data, loading, error }] = useEditCatMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      bio: // value for 'bio'
+ *      age: // value for 'age'
+ *      sex: // value for 'sex'
+ *      breed: // value for 'breed'
+ *      latitude: // value for 'latitude'
+ *      longitude: // value for 'longitude'
+ *   },
+ * });
+ */
+export function useEditCatMutation(baseOptions?: Apollo.MutationHookOptions<EditCatMutation, EditCatMutationVariables>) {
+        return Apollo.useMutation<EditCatMutation, EditCatMutationVariables>(EditCatDocument, baseOptions);
+      }
+export type EditCatMutationHookResult = ReturnType<typeof useEditCatMutation>;
+export type EditCatMutationResult = Apollo.MutationResult<EditCatMutation>;
+export type EditCatMutationOptions = Apollo.BaseMutationOptions<EditCatMutation, EditCatMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -381,10 +750,67 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const GetAllCatsDocument = gql`
+    query GetAllCats($id: Float) {
+  getCats(id: $id) {
+    cats {
+      bio
+      name
+      latitude
+      longitude
+      createdAt
+      age
+      sex
+      breed
+      id
+      pics {
+        url
+      }
+      owner {
+        id
+        username
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllCatsQuery__
+ *
+ * To run a query within a React component, call `useGetAllCatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCatsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetAllCatsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCatsQuery, GetAllCatsQueryVariables>) {
+        return Apollo.useQuery<GetAllCatsQuery, GetAllCatsQueryVariables>(GetAllCatsDocument, baseOptions);
+      }
+export function useGetAllCatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCatsQuery, GetAllCatsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllCatsQuery, GetAllCatsQueryVariables>(GetAllCatsDocument, baseOptions);
+        }
+export type GetAllCatsQueryHookResult = ReturnType<typeof useGetAllCatsQuery>;
+export type GetAllCatsLazyQueryHookResult = ReturnType<typeof useGetAllCatsLazyQuery>;
+export type GetAllCatsQueryResult = Apollo.QueryResult<GetAllCatsQuery, GetAllCatsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
-    username
+    user {
+      id
+      username
+    }
+    selectedCat {
+      id
+      name
+    }
   }
 }
     `;

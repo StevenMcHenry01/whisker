@@ -1,0 +1,22 @@
+query GetAllCats($id: Float) {
+  getCats(id:$id) {
+    cats {
+      bio
+      name
+      latitude
+      longitude
+      createdAt
+      age
+      sex
+      breed
+      id
+      pics {
+        url
+      }
+      owner {
+        id
+        username
+      }
+    }
+  }
+}

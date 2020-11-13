@@ -18,3 +18,31 @@ In order for mutations and queries to be properly typed, we will be using GraphQ
    2. if it errors then the nodemailer test account is probably expired in which case:
       1. uncomment lines that create test email and console log the info
       2. replace the auth section of transporter with newly created data
+
+### Seeding Database
+1. go into your graphql endpoint and create 5 users
+   ```
+   mutation register {
+   register(
+      options: {
+         username: "steven"
+         email: "stevenmchenry01@gmail.com"
+         password: "123123"
+      } 
+   ) {
+      user {
+         id
+         createdAt
+         username
+         email
+      }
+      errors {
+         field
+         message
+      }
+   }
+   }
+   ```
+   - make sure their ids range from 1-5
+
+2. run mutation... (TODO)

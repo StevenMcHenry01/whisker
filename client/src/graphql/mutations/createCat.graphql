@@ -1,0 +1,31 @@
+mutation CreateCat(
+  $name: String!,
+  $bio: String,
+  $age: Float,
+  $sex: String!,
+  $breed: String,
+  $latitude: Float,
+  $longitude: Float
+) {
+  createCat(options:{
+    name: $name,
+    bio: $bio,
+    age: $age,
+    sex: $sex,
+    breed: $breed,
+    latitude: $latitude,
+    longitude: $longitude
+    }) {
+    cat {
+      name
+      breed
+      owner {
+        username
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

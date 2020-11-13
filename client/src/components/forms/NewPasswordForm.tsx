@@ -1,5 +1,4 @@
 // 3rd party imports
-import { Button } from '@chakra-ui/core'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useChangePasswordMutation } from '../../generated/graphql'
@@ -48,9 +47,7 @@ export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
         fieldLabel="New Password"
         type="password"
       />
-      <Button mt={4} colorScheme="teal" isLoading={formState.isSubmitting} type="submit">
-        Change Password
-      </Button>
+      <button type="submit">Change Password</button>
     </form>
   )
 }

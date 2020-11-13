@@ -2,7 +2,6 @@
 import { useForm } from 'react-hook-form'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Button } from '@chakra-ui/core'
 import { useRegisterMutation } from '../../generated/graphql'
 import { validateEmail } from '../../validators/email'
 import { validatePassword } from '../../validators/password'
@@ -60,9 +59,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
         type="password"
         fieldLabel="Password"
       />
-      <Button mt={4} colorScheme="teal" isLoading={formState.isSubmitting} type="submit">
-        Submit
-      </Button>
+      <button type="submit">Submit</button>
     </form>
   )
 }

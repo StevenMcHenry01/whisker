@@ -1,0 +1,39 @@
+mutation EditCat(
+  $id: Float!
+  $name: String,
+  $bio: String,
+  $age: Float,
+  $sex: String,
+  $breed: String,
+  $latitude: Float,
+  $longitude: Float
+) {
+  editCat(options:{
+    id: $id,
+    name: $name,
+    bio: $bio,
+    age: $age,
+    sex: $sex,
+    breed: $breed,
+    latitude: $latitude,
+    longitude: $longitude
+    }) {
+    cat {
+      id
+      name
+      bio
+      age
+      sex
+      latitude
+      longitude
+      breed
+      owner {
+        username
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

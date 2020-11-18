@@ -1,3 +1,54 @@
 .filter-shadow {
   filter: drop-shadow(0px 5px 5px #00000086);
 }
+
+.card {
+  text-align: left;
+  margin: 0 auto;
+  color: inherit;
+  overflow: hidden;
+  text-decoration: none;
+  background-color: #fafafa;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: color 0.15s ease, border-color 0.15s ease;
+  // sets up hover state
+  // position: relative;
+  // top: 0;
+  // transition: all 0.1s ease-in;
+  .thumb {
+    padding-bottom: 80%;
+    // background-image: url(http:sdfdfs.jpg);
+    background-size: cover;
+    background-position: center center;
+  }
+  .header {
+    color: #fba2d7;
+    font-size: 1.8rem;
+    padding: 1.5rem 1rem;
+    span {
+      color: var(--color-main-pink);
+    }
+  }
+  .main-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+  }
+  h3 {
+    margin: 0 0 10px 0;
+  }
+  p {
+    margin: 0;
+    color: var(--color-gray-1);
+  }
+  // &:hover,
+  // &:focus,
+  // &:active {
+  //   top: -2px;
+  //   box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
+  // }
+}

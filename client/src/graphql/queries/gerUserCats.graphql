@@ -1,0 +1,22 @@
+query GetUserCats {
+  getUserCats {
+    cats {
+      bio
+      name
+      latitude
+      longitude
+      createdAt
+      age
+      sex
+      breed
+      id
+      pics {
+        url
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

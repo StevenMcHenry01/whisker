@@ -84,11 +84,15 @@ export class CatResolver {
   ): Promise<CatsResponse> {
     if (id) {
       const cat = await Cat.findOne(id)
+      console.log(cat)
       const viewed = await Viewed.find({
         where: {
           viewerCat: cat,
         },
       })
+      if (viewed.length === 0) {
+        return { cats: await Cat.find() }
+      }
       const cats = await Cat.find({
         where: {
           id: Not(In(viewed.map((v) => v.viewedId))),

@@ -11,13 +11,13 @@ import Link from 'next/link'
 
 // My imports
 
-interface LoginFormProps {}
+interface LoginFormProps { }
 interface FormValues {
   emailOrUsername: string
   password: string
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({}) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ }) => {
   const { handleSubmit, errors, register: formRegister, formState } = useForm()
   const [login] = useLoginMutation()
   const router = useRouter()
@@ -53,9 +53,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({}) => {
         />
       </div>
       <div>
-        <Link href="/forgot-password">Forgot password?</Link>
+        <Link href="/send-reset-email">Forgot password?</Link>
       </div>
       <button type="submit">Login</button>
+      <div>
+        Don't have an account? <Link href="/register">Register</Link>
+      </div>
     </form>
   )
 }

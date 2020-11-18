@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<MeResponse>;
+  getUserCats: CatsResponse;
   getCats: CatsResponse;
 };
 
@@ -309,6 +310,25 @@ export type ChangePasswordMutation = (
   ) }
 );
 
+export type ChooseCatMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type ChooseCatMutation = (
+  { __typename?: 'Mutation' }
+  & { chooseCat: (
+    { __typename?: 'CatResponse' }
+    & { cat?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'name'>
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
 export type CreateCatMutationVariables = Exact<{
   name: Scalars['String'];
   bio?: Maybe<Scalars['String']>;
@@ -334,6 +354,23 @@ export type CreateCatMutation = (
     )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type DislikeCatMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type DislikeCatMutation = (
+  { __typename?: 'Mutation' }
+  & { dislikeCat: (
+    { __typename?: 'DislikeResponse' }
+    & Pick<DislikeResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'message'>
     )>> }
   ) }
 );
@@ -376,6 +413,26 @@ export type ForgotPasswordMutationVariables = Exact<{
 export type ForgotPasswordMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'forgotPassword'>
+);
+
+export type LikeCatMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type LikeCatMutation = (
+  { __typename?: 'Mutation' }
+  & { likeCat: (
+    { __typename?: 'LikeResponse' }
+    & Pick<LikeResponse, 'success'>
+    & { match?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'name'>
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'message'>
+    )>> }
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -421,6 +478,27 @@ export type RegisterMutation = (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'email'>
     )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type GetUserCatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserCatsQuery = (
+  { __typename?: 'Query' }
+  & { getUserCats: (
+    { __typename?: 'CatsResponse' }
+    & { cats?: Maybe<Array<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'bio' | 'name' | 'latitude' | 'longitude' | 'createdAt' | 'age' | 'sex' | 'breed' | 'id'>
+      & { pics: Array<(
+        { __typename?: 'Pic' }
+        & Pick<Pic, 'url'>
+      )> }
+    )>>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
     )>> }
@@ -503,6 +581,44 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const ChooseCatDocument = gql`
+    mutation ChooseCat($id: Float!) {
+  chooseCat(id: $id) {
+    cat {
+      name
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type ChooseCatMutationFn = Apollo.MutationFunction<ChooseCatMutation, ChooseCatMutationVariables>;
+
+/**
+ * __useChooseCatMutation__
+ *
+ * To run a mutation, you first call `useChooseCatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChooseCatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [chooseCatMutation, { data, loading, error }] = useChooseCatMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChooseCatMutation(baseOptions?: Apollo.MutationHookOptions<ChooseCatMutation, ChooseCatMutationVariables>) {
+        return Apollo.useMutation<ChooseCatMutation, ChooseCatMutationVariables>(ChooseCatDocument, baseOptions);
+      }
+export type ChooseCatMutationHookResult = ReturnType<typeof useChooseCatMutation>;
+export type ChooseCatMutationResult = Apollo.MutationResult<ChooseCatMutation>;
+export type ChooseCatMutationOptions = Apollo.BaseMutationOptions<ChooseCatMutation, ChooseCatMutationVariables>;
 export const CreateCatDocument = gql`
     mutation CreateCat($name: String!, $bio: String, $age: Float, $sex: String!, $breed: String, $latitude: Float, $longitude: Float) {
   createCat(
@@ -553,6 +669,41 @@ export function useCreateCatMutation(baseOptions?: Apollo.MutationHookOptions<Cr
 export type CreateCatMutationHookResult = ReturnType<typeof useCreateCatMutation>;
 export type CreateCatMutationResult = Apollo.MutationResult<CreateCatMutation>;
 export type CreateCatMutationOptions = Apollo.BaseMutationOptions<CreateCatMutation, CreateCatMutationVariables>;
+export const DislikeCatDocument = gql`
+    mutation DislikeCat($id: Float!) {
+  dislikeCat(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type DislikeCatMutationFn = Apollo.MutationFunction<DislikeCatMutation, DislikeCatMutationVariables>;
+
+/**
+ * __useDislikeCatMutation__
+ *
+ * To run a mutation, you first call `useDislikeCatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDislikeCatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dislikeCatMutation, { data, loading, error }] = useDislikeCatMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDislikeCatMutation(baseOptions?: Apollo.MutationHookOptions<DislikeCatMutation, DislikeCatMutationVariables>) {
+        return Apollo.useMutation<DislikeCatMutation, DislikeCatMutationVariables>(DislikeCatDocument, baseOptions);
+      }
+export type DislikeCatMutationHookResult = ReturnType<typeof useDislikeCatMutation>;
+export type DislikeCatMutationResult = Apollo.MutationResult<DislikeCatMutation>;
+export type DislikeCatMutationOptions = Apollo.BaseMutationOptions<DislikeCatMutation, DislikeCatMutationVariables>;
 export const EditCatDocument = gql`
     mutation EditCat($id: Float!, $name: String, $bio: String, $age: Float, $sex: String, $breed: String, $latitude: Float, $longitude: Float) {
   editCat(
@@ -640,6 +791,44 @@ export function useForgotPasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswordMutation>;
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
+export const LikeCatDocument = gql`
+    mutation LikeCat($id: Float!) {
+  likeCat(id: $id) {
+    success
+    match {
+      name
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type LikeCatMutationFn = Apollo.MutationFunction<LikeCatMutation, LikeCatMutationVariables>;
+
+/**
+ * __useLikeCatMutation__
+ *
+ * To run a mutation, you first call `useLikeCatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeCatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeCatMutation, { data, loading, error }] = useLikeCatMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useLikeCatMutation(baseOptions?: Apollo.MutationHookOptions<LikeCatMutation, LikeCatMutationVariables>) {
+        return Apollo.useMutation<LikeCatMutation, LikeCatMutationVariables>(LikeCatDocument, baseOptions);
+      }
+export type LikeCatMutationHookResult = ReturnType<typeof useLikeCatMutation>;
+export type LikeCatMutationResult = Apollo.MutationResult<LikeCatMutation>;
+export type LikeCatMutationOptions = Apollo.BaseMutationOptions<LikeCatMutation, LikeCatMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($emailOrUsername: String!, $password: String!) {
   login(options: {emailOrUsername: $emailOrUsername, password: $password}) {
@@ -750,6 +939,55 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const GetUserCatsDocument = gql`
+    query GetUserCats {
+  getUserCats {
+    cats {
+      bio
+      name
+      latitude
+      longitude
+      createdAt
+      age
+      sex
+      breed
+      id
+      pics {
+        url
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserCatsQuery__
+ *
+ * To run a query within a React component, call `useGetUserCatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserCatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserCatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserCatsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
+        return Apollo.useQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
+      }
+export function useGetUserCatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
+          return Apollo.useLazyQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
+        }
+export type GetUserCatsQueryHookResult = ReturnType<typeof useGetUserCatsQuery>;
+export type GetUserCatsLazyQueryHookResult = ReturnType<typeof useGetUserCatsLazyQuery>;
+export type GetUserCatsQueryResult = Apollo.QueryResult<GetUserCatsQuery, GetUserCatsQueryVariables>;
 export const GetAllCatsDocument = gql`
     query GetAllCats($id: Float) {
   getCats(id: $id) {

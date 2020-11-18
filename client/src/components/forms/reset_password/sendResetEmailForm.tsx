@@ -1,19 +1,19 @@
 // 3rd party imports
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useForgotPasswordMutation } from '../../generated/graphql'
-import { validateEmail } from '../../validators/email'
-import { InputField } from './InputField'
+import { useForgotPasswordMutation } from '../../../generated/graphql'
+import { validateEmail } from '../../../validators/email'
+import { InputField } from '../shared/inputField'
 import Link from 'next/link'
 
 // My imports d
 
-interface SendResetEmailFormProps {}
+interface SendResetEmailFormProps { }
 interface FormValues {
   email: string
 }
 
-export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({}) => {
+export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
   const { handleSubmit, errors, register: formRegister, formState } = useForm()
   const [forgotPassword] = useForgotPasswordMutation()
   const [emailSent, setEmailSent] = useState(false)

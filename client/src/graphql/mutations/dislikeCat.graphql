@@ -1,0 +1,8 @@
+mutation DislikeCat($id: Float!) {
+  dislikeCat(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}

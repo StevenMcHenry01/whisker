@@ -1,0 +1,11 @@
+mutation LikeCat($id: Float!) {
+  likeCat(id: $id) {
+    success
+    match {
+      name
+    }
+    errors {
+      message
+    }
+  }
+}

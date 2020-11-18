@@ -1,16 +1,14 @@
 // 3rd party imports
 import React from 'react'
-import { SendResetEmailForm } from '../components/forms/SendResetEmailForm'
-import { MainLayout } from '../components/wrappers/MainLayout'
 
 // My imports
+import { SendResetEmailForm } from '../components/forms/reset_password/sendResetEmailForm'
+import { MainLayout } from '../components/layout/main_layout/mainLayout'
 
-const SendResetEmail: React.FC = ({}) => {
+const SendResetEmail: React.FC = ({ }) => {
   return (
     <MainLayout>
-      <div>
-        <SendResetEmailForm />
-      </div>
+      <SendResetEmailForm />
     </MainLayout>
   )
 }

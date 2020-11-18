@@ -19,6 +19,7 @@ import { GraphQLUpload, FileUpload } from 'graphql-upload'
 import mkdirp from 'mkdirp'
 import { createWriteStream } from 'fs'
 import { Pic } from '../entities/Pic'
+import { CatsResponse } from '../graphqlTypes/CatsResponse'
 
 @Resolver(User)
 export class UserResolver {
@@ -173,7 +174,7 @@ export class UserResolver {
       }
     }
 
-    // log in user after changed password
+    // log in user
     if (req.session) {
       req.session.userId = newUser.id // s
     }
@@ -318,6 +319,26 @@ export class UserResolver {
       }
     } catch (e) {
       return false
+    }
+  }
+
+  // ~ GET USER CATS
+  @Query(() => CatsResponse)
+  @UseMiddleware(isAuth) // guarded resolver
+  async getUserCats(@Ctx() { req, redis }: ExpressRedisContext): Promise<CatsResponse> {
+    const user = await User.findOne(parseInt(req.session?.userId))
+    const cats = await Cat.find({ where: { owner: user } })
+
+    if (cats) {
+      return { cats }
+    }
+    return {
+      errors: [
+        {
+          field: 'cats',
+          message: 'There was an error getting cats.',
+        },
+      ],
     }
   }
 }

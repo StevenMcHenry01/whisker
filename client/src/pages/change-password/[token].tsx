@@ -1,13 +1,13 @@
 // 3rd party imports
-import { Box } from '@chakra-ui/core'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { FormCard } from '../../components/forms/FormCard'
 import { NewPasswordForm } from '../../components/forms/NewPasswordForm'
 import { MainLayout } from '../../components/wrappers/MainLayout'
 
 // My imports
 
-const NewPassword: React.FC = ({}) => {
+const NewPassword: React.FC = ({ }) => {
   const router = useRouter()
   const token = typeof router.query.token === 'string' ? router.query.token : ''
 
@@ -15,9 +15,9 @@ const NewPassword: React.FC = ({}) => {
 
   return (
     <MainLayout>
-      <Box m="100px auto" maxW="md" borderWidth="1px" rounded="lg" overflow="hidden" p="20px">
+      <FormCard header="New Password">
         <NewPasswordForm token={token} />
-      </Box>
+      </FormCard>
     </MainLayout>
   )
 }

@@ -8,6 +8,9 @@
   padding: 3rem 1rem;
   flex: 1;
   display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: var(--breakpoint-lg);
 }
 
 .footer {

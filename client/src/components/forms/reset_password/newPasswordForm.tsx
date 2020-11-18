@@ -1,9 +1,9 @@
 // 3rd party imports
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useChangePasswordMutation } from '../../generated/graphql'
-import { InputField } from './InputField'
-import { validatePassword } from '../../validators/password'
+import { useChangePasswordMutation } from '../../../generated/graphql'
+import { InputField } from '../shared/inputField'
+import { validatePassword } from '../../../validators/password'
 import { useRouter } from 'next/router'
 
 // My imports

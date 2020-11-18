@@ -2,8 +2,8 @@
 import Head from 'next/head'
 
 // my imports
-import { Footer } from '../Footer'
-import { Navbar } from '../navbar/Navbar'
+import { Footer } from '../footer/footer'
+import { Navbar } from '../navbar/navbar'
 
 interface MainLayoutProps {
   children: any

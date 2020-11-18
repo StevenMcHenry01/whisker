@@ -2,7 +2,7 @@
 import React from 'react'
 
 // My imports
-import { useDelayedRender } from '../../hooks/useDelayedRender'
+import { useDelayedRender } from '../../../hooks/useDelayedRender'
 
 const DelayedRender = ({ delay, children }: any) => useDelayedRender(delay)(() => children)
 

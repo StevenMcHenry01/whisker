@@ -1,0 +1,11 @@
+mutation ChooseCat($id: Float!) {
+  chooseCat(id: $id) {
+    cat {
+      name
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

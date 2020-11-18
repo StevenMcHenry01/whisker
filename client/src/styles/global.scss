@@ -1,0 +1,61 @@
+:root {
+  // colors
+  --color-main-purple: #cf74be;
+  --color-main-pink: #fe7ba9;
+  --color-main-salmon: #ff8f8e;
+  --color-main-orange: #ffae74;
+  --color-main-light-orange: #ffd366;
+  --color-main-yellow: #f9f871;
+  --color-black: #2b2b2b;
+  --color-white: #fbfbfb;
+  --color-gray-1: #b7b7af;
+  --color-gray-2: #848388;
+  --color-gray-3: #5d5e60;
+  --color-gray-4: #373737;
+  --color-success: #92fa52;
+  --color-error: #fa113d;
+
+  // breakpoints
+  --breakpoint-small: 640px;
+  --breakpoint-medium: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+    Helvetica Neue, sans-serif;
+  color: #2b2b2b; // off-black... so hot right now
+  background-color: #fbfbfb; // off-white... so hot right now
+}
+
+// usually dont want these bold
+h2,
+h3,
+h4 {
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+// content size takes padding/border into account
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// by default, these elements don't use your font
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+}

@@ -1,0 +1,30 @@
+.nav {
+  padding: 1.8rem;
+  color: var(--white);
+  background-image: linear-gradient(
+    to right,
+    var(--color-main-purple),
+    var(--color-main-pink),
+    var(--color-main-salmon),
+    var(--color-main-orange),
+    var(--color-main-light-orange),
+    var(--color-main-yellow)
+  );
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav__centered-elements {
+  flex: 0 1 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav__right-elements {
+  flex: 0 1 auto;
+  margin-left: auto;
+}

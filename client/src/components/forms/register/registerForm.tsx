@@ -2,21 +2,21 @@
 import { useForm } from 'react-hook-form'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { useRegisterMutation } from '../../generated/graphql'
-import { validateEmail } from '../../validators/email'
-import { validatePassword } from '../../validators/password'
-import { validateUsername } from '../../validators/username'
-import { InputField } from './InputField'
+import { useRegisterMutation } from '../../../generated/graphql'
+import { validateEmail } from '../../../validators/email'
+import { validatePassword } from '../../../validators/password'
+import { validateUsername } from '../../../validators/username'
+import { InputField } from '../shared/inputField'
 import { useApolloClient } from '@apollo/client'
 
-interface RegisterFormProps {}
+interface RegisterFormProps { }
 interface FormValues {
   email: string
   username: string
   password: string
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ }) => {
   const { handleSubmit, errors, register: formRegister, formState } = useForm()
   const [register] = useRegisterMutation()
   const router = useRouter()

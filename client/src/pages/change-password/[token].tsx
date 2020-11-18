@@ -1,9 +1,9 @@
 // 3rd party imports
 import { useRouter } from 'next/router'
 import React from 'react'
-import { FormCard } from '../../components/forms/FormCard'
-import { NewPasswordForm } from '../../components/forms/NewPasswordForm'
-import { MainLayout } from '../../components/wrappers/MainLayout'
+import { FormCard } from '../../components/forms/shared/formCard'
+import { NewPasswordForm } from '../../components/forms/reset_password/newPasswordForm'
+import { MainLayout } from '../../components/layout/main_layout/mainLayout'
 
 // My imports
 

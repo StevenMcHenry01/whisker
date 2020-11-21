@@ -2,8 +2,6 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useChangePasswordMutation } from '../../../generated/graphql'
-import { InputField } from '../shared/inputField'
-import { validatePassword } from '../../../validators/password'
 import { useRouter } from 'next/router'
 
 // My imports
@@ -18,7 +16,7 @@ interface FormValues {
 export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
   token,
 }: NewPasswordFormProps) => {
-  const { handleSubmit, errors, register: formRegister, formState, setError } = useForm()
+  const { handleSubmit, errors, register, formState, setError } = useForm()
   const [changePassword] = useChangePasswordMutation()
   const router = useRouter()
 
@@ -36,15 +34,7 @@ export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField
-        errors={errors}
-        validator={validatePassword}
-        register={formRegister}
-        fieldName="newPassword"
-        placeholder="new password"
-        fieldLabel="New Password"
-        type="password"
-      />
+      <input name="newPassword" placeholder="new password" type="password" ref={register({ required: true })} />
       <button type="submit">Change Password</button>
     </form>
   )

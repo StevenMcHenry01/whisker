@@ -140,3 +140,5 @@ yarn-debug.log*
 yarn-error.log*
 
 /server/images
+
+/server/src/sql

@@ -1,5 +1,8 @@
+// 3rd party imports
 import { Resolver, Mutation, Arg, Ctx, UseMiddleware, Query } from 'type-graphql'
-import { Any, getConnection } from 'typeorm'
+import { getConnection } from 'typeorm'
+
+// my imports
 import { ExpressRedisContext } from '../tsTypes/ExpressRedisContext'
 import { Cat } from '../entities/Cat'
 import { isAuth } from '../middleware/isAuth'
@@ -21,7 +24,7 @@ export class MessageResolver {
   @UseMiddleware(isCatSelected) // guarded resolver
   async sendMessage(
     @Arg('options') options: MessageInput,
-    @Ctx() { req, redis }: ExpressRedisContext
+    @Ctx() { req }: ExpressRedisContext
   ): Promise<MessageResponse> {
     const catSender = await Cat.findOne(parseInt(req.session?.selectedCatId))
     if (!catSender) {
@@ -74,10 +77,7 @@ export class MessageResolver {
   @Query(() => SessionResponse)
   @UseMiddleware(isAuth) // guarded resolver
   @UseMiddleware(isCatSelected) // guarded resolver
-  async getChatSession(
-    @Arg('id') id: number,
-    @Ctx() { req, redis }: ExpressRedisContext
-  ): Promise<SessionResponse> {
+  async getChatSession(@Arg('id') id: number): Promise<SessionResponse> {
     const chatSession = await ChatSession.findOne(id)
 
     if (!chatSession) {

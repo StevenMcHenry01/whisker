@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useForgotPasswordMutation } from '../../../generated/graphql'
-import { InputField } from '../shared/inputField'
 import Link from 'next/link'
 
 // My imports d
@@ -13,7 +12,7 @@ interface FormValues {
 }
 
 export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
-  const { handleSubmit, errors, register: formRegister, formState } = useForm()
+  const { handleSubmit, errors, register, formState } = useForm()
   const [forgotPassword] = useForgotPasswordMutation()
   const [emailSent, setEmailSent] = useState(false)
 
@@ -35,15 +34,7 @@ export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField
-        errors={errors}
-        validator={{ required: true }}
-        register={formRegister}
-        fieldName="email"
-        placeholder="email"
-        fieldLabel="Email to send reset link"
-        type="email"
-      />
+      <input name="email" placeholder="email to send reset link" type="email" ref={register({ required: true })} />
       <button type="submit">Change Password</button>
     </form>
   )

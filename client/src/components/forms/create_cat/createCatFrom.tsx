@@ -3,13 +3,10 @@ import React from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import Link from 'next/link'
 
 // My imports
-import { InputField } from '../shared/inputField'
 import { useCreateCatMutation } from '../../../generated/graphql'
-import { validatePassword } from '../../../validators/password'
-import { UploadFile } from './uploadFile'
+import { Upload } from '../../upload/upload'
 
 interface CreateCatFormProps {
 
@@ -58,6 +55,9 @@ export const CreateCatForm: React.FC<CreateCatFormProps> = ({ }) => {
         <input name="breed" placeholder="breed" type="text" ref={register()} />
       </div>
       <textarea ref={register} name="bio" placeholder="bio" />
+      <div>
+        <Upload />
+      </div>
       <div>
         <button type="submit">Create Cat</button>
       </div>

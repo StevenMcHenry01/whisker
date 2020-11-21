@@ -1,9 +1,10 @@
+// 3rd party imports
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql'
-import argon2 from 'argon2'
 import { getConnection, In, Not } from 'typeorm'
+import { FileUpload, GraphQLUpload } from 'graphql-upload'
+
+// my imports
 import { CatResponse } from '../graphqlTypes/CatResponse'
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../utils/constants'
-import { v4 } from 'uuid'
 import { ExpressRedisContext } from '../tsTypes/ExpressRedisContext'
 import { Cat } from '../entities/Cat'
 import { CreateCatInput } from '../graphqlTypes/CreateCatInput'
@@ -20,12 +21,9 @@ import { Dislike } from '../entities/Dislike'
 import { Viewed } from '../entities/Viewed'
 import { DislikeResponse } from '../graphqlTypes/LikeResponse copy'
 import { ChatSession } from '../entities/ChatSession'
-import { FileUpload, GraphQLUpload } from 'graphql-upload'
-import { createWriteStream } from 'fs'
-import mkdirp from 'mkdirp'
 import { MatchesResponse } from '../graphqlTypes/MatchesResponse'
-import { IdentityStore } from 'aws-sdk'
 import { cloudinary } from '../utils/cloudinary'
+import { validateCat } from '../validators/validateCat'
 
 @Resolver(Cat)
 export class CatResolver {
@@ -36,7 +34,7 @@ export class CatResolver {
   @UseMiddleware(isAuth) // guarded resolver
   async createCat(
     @Arg('options') options: CreateCatInput,
-    @Ctx() { req, redis }: ExpressRedisContext
+    @Ctx() { req }: ExpressRedisContext
   ): Promise<CatResponse> {
     const user = await User.findOne(parseInt(req.session?.userId))
     if (!user) {
@@ -48,6 +46,11 @@ export class CatResolver {
           },
         ],
       }
+    }
+
+    const errors = validateCat(options)
+    if (errors) {
+      return { errors }
     }
 
     let newCat
@@ -81,10 +84,7 @@ export class CatResolver {
 
   // ~ GET ALL CATS OR UNVIEWED CATS
   @Query(() => CatsResponse)
-  async getCats(
-    @Ctx() { req, redis }: ExpressRedisContext,
-    @Arg('id', { nullable: true }) id?: number
-  ): Promise<CatsResponse> {
+  async getCats(@Arg('id', { nullable: true }) id?: number): Promise<CatsResponse> {
     if (id) {
       const cat = await Cat.findOne(id)
       const viewed = await Viewed.find({
@@ -137,10 +137,7 @@ export class CatResolver {
   // ~ EDIT CAT
   @Mutation(() => CatResponse)
   @UseMiddleware(isAuth) // guarded resolver
-  async editCat(
-    @Arg('options') options: EditCatInput,
-    @Ctx() { req, redis }: ExpressRedisContext
-  ): Promise<CatResponse> {
+  async editCat(@Arg('options') options: EditCatInput): Promise<CatResponse> {
     let updatedCat
     try {
       await Cat.update({ id: options.id }, { name: options.name })
@@ -161,10 +158,7 @@ export class CatResolver {
   // ~ DELETE CAT
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth) // guarded resolver
-  async deleteCat(
-    @Arg('id') id: number,
-    @Ctx() { req, redis }: ExpressRedisContext
-  ): Promise<boolean> {
+  async deleteCat(@Arg('id') id: number): Promise<boolean> {
     try {
       await Cat.delete({ id })
     } catch (e) {
@@ -178,10 +172,7 @@ export class CatResolver {
   @Mutation(() => LikeResponse)
   @UseMiddleware(isAuth) // guarded resolver
   @UseMiddleware(isCatSelected) // guarded resolver
-  async likeCat(
-    @Arg('id') id: number,
-    @Ctx() { req, redis }: ExpressRedisContext
-  ): Promise<LikeResponse> {
+  async likeCat(@Arg('id') id: number, @Ctx() { req }: ExpressRedisContext): Promise<LikeResponse> {
     const likerCat = await Cat.findOne(parseInt(req.session?.selectedCatId))
     const likedCat = await Cat.findOne(id)
     if (likerCat && likedCat) {
@@ -267,7 +258,7 @@ export class CatResolver {
   @UseMiddleware(isCatSelected) // guarded resolver
   async dislikeCat(
     @Arg('id') id: number,
-    @Ctx() { req, redis }: ExpressRedisContext
+    @Ctx() { req }: ExpressRedisContext
   ): Promise<DislikeResponse> {
     const dislikerCat = await Cat.findOne(parseInt(req.session?.selectedCatId))
     const dislikedCat = await Cat.findOne(id)
@@ -311,14 +302,13 @@ export class CatResolver {
   @UseMiddleware(isAuth)
   async uploadCatPhoto(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
-    @Arg('id') id: number,
-    @Ctx() { s3 }: ExpressRedisContext
+    @Arg('id') id: number
   ): Promise<boolean> {
     const cat = await Cat.findOne(id)
     if (!cat) {
       return false
     }
-    const { createReadStream, filename, mimetype } = file
+    const { createReadStream } = file
 
     const fileStream = createReadStream()
 
@@ -351,7 +341,7 @@ export class CatResolver {
   @Query(() => MatchesResponse)
   @UseMiddleware(isAuth) // guarded resolver
   @UseMiddleware(isCatSelected) // guarded resolver
-  async getMatches(@Ctx() { req, redis }: ExpressRedisContext): Promise<MatchesResponse> {
+  async getMatches(@Ctx() { req }: ExpressRedisContext): Promise<MatchesResponse> {
     const cat = await Cat.findOne(parseInt(req.session?.selectedCatId))
 
     const matches = await Match.find({ where: { cat: cat } })

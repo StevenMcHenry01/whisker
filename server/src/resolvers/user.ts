@@ -1,25 +1,27 @@
+// 3rd party imports
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql'
-import { User } from '../entities/User'
 import argon2 from 'argon2'
 import { getConnection } from 'typeorm'
+import { v4 } from 'uuid'
+import { GraphQLUpload, FileUpload } from 'graphql-upload'
+
+// my imports
+import { User } from '../entities/User'
 import { RegisterInput } from '../graphqlTypes/RegisterInput'
 import { UserResponse } from '../graphqlTypes/UserResponse'
 import { LoginInput } from '../graphqlTypes/LoginInput'
 import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../utils/constants'
-import { v4 } from 'uuid'
 import { sendEmail } from '../utils/sendEmail'
 import { ExpressRedisContext } from '../tsTypes/ExpressRedisContext'
-import { validateRegister } from './validators/validateRegister'
+import { validateRegister } from '../validators/validateRegister'
 import { NewPasswordInput } from '../graphqlTypes/NewPasswordInput'
 import { Cat } from '../entities/Cat'
 import { CatResponse } from '../graphqlTypes/CatResponse'
 import { isAuth } from '../middleware/isAuth'
 import { MeResponse } from '../graphqlTypes/MeResponse'
-import { GraphQLUpload, FileUpload } from 'graphql-upload'
-import mkdirp from 'mkdirp'
-import { createWriteStream } from 'fs'
 import { Pic } from '../entities/Pic'
 import { CatsResponse } from '../graphqlTypes/CatsResponse'
+import { validatePassword } from '../validators/validatePassword'
 
 @Resolver(User)
 export class UserResolver {
@@ -31,16 +33,9 @@ export class UserResolver {
     @Arg('options') options: NewPasswordInput,
     @Ctx() { req, redis }: ExpressRedisContext
   ): Promise<UserResponse> {
-    // check for password length
-    if (options.newPassword.length <= 5) {
-      return {
-        errors: [
-          {
-            field: 'newPassword',
-            message: 'new password must be 6 characters',
-          },
-        ],
-      }
+    const errors = validatePassword(options)
+    if (errors) {
+      return { errors }
     }
 
     // make sure the token is still in redis
@@ -107,9 +102,13 @@ export class UserResolver {
     // store token in redis
     await redis.set(FORGOT_PASSWORD_PREFIX + token, user.id, 'ex', 1000 * 60 * 60 * 1) // one hour token
 
-    const html = `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
+    const html = `<a href="${
+      process.env.FRONTEND_URL as string
+    }change-password/${token}">reset password</a>`
 
-    await sendEmail(email, html)
+    const link = `${process.env.FRONTEND_URL as string}change-password/${token}`
+
+    await sendEmail(html, email, link)
 
     return true
   }
@@ -130,7 +129,7 @@ export class UserResolver {
         }
       }
     }
-    // user is logged in so return the user
+    // user is logged in with no selected cat
     return { user: await User.findOne(req.session?.userId) }
   }
 
@@ -291,13 +290,13 @@ export class UserResolver {
 
   // ~ UPLOAD PHOTO
   @Mutation(() => Boolean)
-  // @UseMiddleware(isAuth) // guarded resolver
+  @UseMiddleware(isAuth) // guarded resolver
   async uploadUserPhoto(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
     @Ctx() { s3 }: ExpressRedisContext
   ): Promise<boolean> {
     const user = await User.findOne(1)
-    const { createReadStream, filename, mimetype } = await file
+    const { createReadStream, filename } = await file
 
     const fileStream = createReadStream()
 
@@ -325,7 +324,7 @@ export class UserResolver {
   // ~ GET USER CATS
   @Query(() => CatsResponse)
   @UseMiddleware(isAuth) // guarded resolver
-  async getUserCats(@Ctx() { req, redis }: ExpressRedisContext): Promise<CatsResponse> {
+  async getUserCats(@Ctx() { req }: ExpressRedisContext): Promise<CatsResponse> {
     const user = await User.findOne(parseInt(req.session?.userId))
     const cats = await Cat.find({ where: { owner: user } })
 

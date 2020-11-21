@@ -6,9 +6,7 @@ import { useForm } from 'react-hook-form'
 import Link from 'next/link'
 
 // My imports
-import { InputField } from '../shared/inputField'
 import { useLoginMutation } from '../../../generated/graphql'
-import { validatePassword } from '../../../validators/password'
 
 interface LoginFormProps { }
 interface FormValues {
@@ -17,7 +15,7 @@ interface FormValues {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ }) => {
-  const { handleSubmit, errors, register: formRegister, formState } = useForm()
+  const { handleSubmit, errors, register, formState } = useForm()
   const [login] = useLoginMutation()
   const router = useRouter()
   const apolloClient = useApolloClient()
@@ -33,24 +31,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField
-        errors={errors}
-        register={formRegister}
-        validator={{ required: true }}
-        fieldName="emailOrUsername"
-        placeholder="email or username"
-        fieldLabel="Email or Username"
-      />
+      <input name="emailOrUsername" placeholder="email or username" type="text" ref={register({ required: true })} />
       <div>
-        <InputField
-          errors={errors}
-          validator={validatePassword}
-          register={formRegister}
-          fieldName="password"
-          placeholder="password"
-          type="password"
-          fieldLabel="Password"
-        />
+        <input name="password" placeholder="password" type="password" ref={register({ required: true })} />
       </div>
       <div>
         <Link href="/send-reset-email">Forgot password?</Link>

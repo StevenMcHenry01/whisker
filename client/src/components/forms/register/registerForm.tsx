@@ -3,8 +3,6 @@ import { useForm } from 'react-hook-form'
 import React from 'react'
 import { useRouter } from 'next/router'
 import { useRegisterMutation } from '../../../generated/graphql'
-import { validatePassword } from '../../../validators/password'
-import { InputField } from '../shared/inputField'
 import { useApolloClient } from '@apollo/client'
 
 interface RegisterFormProps { }
@@ -30,33 +28,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField
-        errors={errors}
-        validator={{ required: true }}
-        register={formRegister}
-        fieldName="username"
-        placeholder="username"
-        fieldLabel="Username"
-      />
+      <input name="username" placeholder="username" type="text" ref={formRegister({ required: true })} />
 
-      <InputField
-        errors={errors}
-        validator={{ required: true }}
-        register={formRegister}
-        fieldName="email"
-        placeholder="email"
-        fieldLabel="Email"
-      />
+      <input name="email" placeholder="email" type="email" ref={formRegister({ required: true })} />
 
-      <InputField
-        errors={errors}
-        validator={validatePassword}
-        register={formRegister}
-        fieldName="password"
-        placeholder="password"
-        type="password"
-        fieldLabel="Password"
-      />
+      <input name="password" placeholder="password" type="password" ref={formRegister({ required: true })} />
       <button type="submit">Submit</button>
     </form>
   )

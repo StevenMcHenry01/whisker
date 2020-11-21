@@ -1,7 +1,14 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { createUploadLink } from 'apollo-upload-client'
+import { withApollo } from 'next-apollo'
 
-export const client = new ApolloClient({
-  uri: 'http://localhost:8080/graphql',
-  cache: new InMemoryCache(),
-  credentials: 'include',
+const client = new ApolloClient({
+  // uri: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/graphql' : 'http://localhost:8080/graphql',
+  link: createUploadLink({
+    uri: process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_SERVER_URL_GRAPHQL as string : 'http://localhost:8080/graphql',
+    credentials: 'include',
+  }),
+  cache: new InMemoryCache()
 })
+
+export default withApollo(client)

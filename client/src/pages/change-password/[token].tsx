@@ -6,12 +6,11 @@ import { NewPasswordForm } from '../../components/forms/reset_password/newPasswo
 import { MainLayout } from '../../components/layout/main_layout/mainLayout'
 
 // My imports
+import withApollo from '../../config/apolloClient'
 
-const NewPassword: React.FC = ({ }) => {
+const NewPassword = ({ }) => {
   const router = useRouter()
   const token = typeof router.query.token === 'string' ? router.query.token : ''
-
-  console.log(token)
 
   return (
     <MainLayout>
@@ -22,4 +21,4 @@ const NewPassword: React.FC = ({ }) => {
   )
 }
 
-export default NewPassword
+export default withApollo()(NewPassword)

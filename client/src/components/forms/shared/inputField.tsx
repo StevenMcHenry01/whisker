@@ -1,17 +1,18 @@
 // 3rd party imports
 import React from 'react'
-import { DeepMap, FieldError, Validate } from 'react-hook-form'
+import { DeepMap, FieldError } from 'react-hook-form'
 
 // My imports
 
 interface InputFieldProps {
   errors: DeepMap<Record<string, any>, FieldError>
-  validator: Validate | Record<string, Validate> | undefined
+  validator?: any
   register: any
   fieldName: string
   fieldLabel: string
   placeholder: string
   type?: string
+  errorMessage?: string
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -22,13 +23,17 @@ export const InputField: React.FC<InputFieldProps> = ({
   fieldLabel,
   placeholder,
   type = 'text',
+  errorMessage = 'Invalid value.'
 }: InputFieldProps) => {
   return (
-    <input
-      name={fieldName}
-      type={type}
-      placeholder={placeholder}
-      ref={register({ validate: validator })}
-    />
+    <>
+      <input
+        name={fieldName}
+        type={type}
+        placeholder={placeholder}
+        ref={register(validator)}
+      />
+      <p>{errors[fieldName] && errorMessage}</p>
+    </>
   )
 }

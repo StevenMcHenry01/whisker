@@ -1,0 +1,12 @@
+mutation SendMessage($body: String!, $receiverId: Float!) {
+  sendMessage(options: { body: $body, receiverId: $receiverId }) {
+    message {
+      body
+      senderId
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

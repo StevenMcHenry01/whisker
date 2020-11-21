@@ -1,5 +1,11 @@
 module.exports = {
-  extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:json/recommended', 'wesbos'],
+  extends: [
+    'airbnb',
+    'prettier',
+    'prettier/react',
+    'plugin:json/recommended',
+    'wesbos',
+  ],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2020,
@@ -20,7 +26,12 @@ module.exports = {
     'no-alert': 0,
     'no-await-in-loop': 0,
     'no-return-assign': ['error', 'except-parens'],
-    'no-restricted-syntax': [2, 'ForInStatement', 'LabeledStatement', 'WithStatement'],
+    'no-restricted-syntax': [
+      2,
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
     'no-unused-vars': [
       1,
       {
@@ -92,7 +103,7 @@ module.exports = {
       {
         trailingComma: 'es5',
         singleQuote: true,
-        printWidth: 100,
+        printWidth: 80,
         // below line only for window users facing CLRF and eslint/prettier error
         // non window users feel free to delete it
         endOfLine: 'auto',

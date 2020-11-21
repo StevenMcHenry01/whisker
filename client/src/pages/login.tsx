@@ -5,11 +5,12 @@ import React from 'react'
 import { LoginForm } from '../components/forms/login/loginForm'
 import { FormCard } from '../components/forms/shared/formCard'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
+import withApollo from '../config/apolloClient'
 
-const login: React.FC = ({ }) => {
+const login = ({ }) => {
   return (
     <MainLayout><FormCard header='Login'><LoginForm /></FormCard></MainLayout>
   )
 }
 
-export default login
+export default withApollo()(login)

@@ -1,0 +1,14 @@
+query GetChatSession($id: Float!) {
+  getChatSession(id: $id) {
+    chatSession {
+      messages {
+        body
+        senderId
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

@@ -14,6 +14,12 @@
   "[javascriptreact]": {
     "editor.formatOnSave": false
   },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": false
+  },
   // show eslint icon at bottom toolbar
   "eslint.alwaysShowStatus": true,
   // tell the ESLint plugin to run on save

@@ -1,5 +1,5 @@
-import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql'
-import { Any, getConnection, In, Not } from 'typeorm'
+import { Resolver, Mutation, Arg, Ctx, UseMiddleware, Query } from 'type-graphql'
+import { Any, getConnection } from 'typeorm'
 import { ExpressRedisContext } from '../tsTypes/ExpressRedisContext'
 import { Cat } from '../entities/Cat'
 import { isAuth } from '../middleware/isAuth'
@@ -8,6 +8,8 @@ import { ChatSession } from '../entities/ChatSession'
 import { Message } from '../entities/Message'
 import { MessageResponse } from '../graphqlTypes/MessageResponse'
 import { MessageInput } from '../graphqlTypes/MessageInput'
+import { Match } from '../entities/Match'
+import { SessionResponse } from '../graphqlTypes/SessionResponse'
 
 @Resolver(Message)
 export class MessageResolver {
@@ -22,8 +24,7 @@ export class MessageResolver {
     @Ctx() { req, redis }: ExpressRedisContext
   ): Promise<MessageResponse> {
     const catSender = await Cat.findOne(parseInt(req.session?.selectedCatId))
-    const catReceiver = await Cat.findOne(options.recieverId)
-    if (!catSender || !catReceiver) {
+    if (!catSender) {
       return {
         errors: [
           {
@@ -33,12 +34,18 @@ export class MessageResolver {
         ],
       }
     }
-    const session = await ChatSession.findOne({
-      where: {
-        catOneId: Any([catSender.id, catReceiver.id]),
-        catTwoId: Any([catSender.id, catReceiver.id]),
-      },
-    })
+    const match = await Match.findOne({ where: { cat: catSender, matchCatId: options.receiverId } })
+    if (!match) {
+      return {
+        errors: [
+          {
+            field: 'message',
+            message: 'you two are not matched.',
+          },
+        ],
+      }
+    }
+    const session = await ChatSession.findOne(match.chatSessionId)
 
     if (!session) {
       return {
@@ -55,10 +62,35 @@ export class MessageResolver {
     const message = new Message()
     message.body = options.body
     message.chatSession = session
+    message.senderId = catSender.id
     await this.connection.manager.save(message)
 
     return {
-      chatSession: session,
+      message: message,
+    }
+  }
+
+  // ~ GET CHAT SESSION
+  @Query(() => SessionResponse)
+  @UseMiddleware(isAuth) // guarded resolver
+  @UseMiddleware(isCatSelected) // guarded resolver
+  async getChatSession(
+    @Arg('id') id: number,
+    @Ctx() { req, redis }: ExpressRedisContext
+  ): Promise<SessionResponse> {
+    const chatSession = await ChatSession.findOne(id)
+
+    if (!chatSession) {
+      return {
+        errors: [
+          {
+            field: 'chat session',
+            message: 'chat session was not found.',
+          },
+        ],
+      }
+    } else {
+      return { chatSession: chatSession }
     }
   }
 }

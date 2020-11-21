@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useChooseCatMutation } from '../../generated/graphql'
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 // My imports
 
@@ -32,7 +33,14 @@ export const ChooseCatPanel: React.FC<ChooseCatPanelProps> = ({ name, photoUrl, 
     <div style={{ border: '1px solid black' }}>
       <Image src={photoUrl} alt="cat" width={100} height={100} />
       <p>{name}</p>
-      <button onClick={handleChooseCat}>Choose Me!</button>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <button onClick={handleChooseCat}>Choose Me!</button>
+        <Link href='/edit-cat'>
+          <a>
+            <button>Edit Cat</button>
+          </a>
+        </Link>
+      </div>
     </div>
   )
 }

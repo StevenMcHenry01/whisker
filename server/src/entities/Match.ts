@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Cat } from './Cat'
+import { ChatSession } from './ChatSession'
 
 @ObjectType()
 @Entity()
@@ -24,9 +25,13 @@ export class Match extends BaseEntity {
   @CreateDateColumn()
   createdAt = new Date()
 
-  @Field(() => Cat)
-  @Column(() => Cat)
-  match!: Cat
+  @Field()
+  @Column()
+  matchCatId!: number
+
+  @Field()
+  @Column()
+  chatSessionId!: number
 
   @Field(() => Cat)
   @ManyToOne(() => Cat, (cat) => cat.matches)

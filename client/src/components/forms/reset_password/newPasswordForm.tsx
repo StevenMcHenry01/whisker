@@ -27,8 +27,6 @@ export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
       variables: { token, newPassword: values.newPassword },
     })
 
-    console.log(response)
-
     if (!response.data?.changePassword.user) {
       setError('newPassword', { message: 'There was an error.' })
     } else {

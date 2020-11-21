@@ -30,6 +30,12 @@ export const Navbar = (): JSX.Element => {
 
   return (
     <nav className={styles.nav}>
+      {data?.me?.selectedCat && <Link href={`/matches/${data.me.selectedCat.id}`}>
+        <a>
+          <Button>View Matches</Button>
+        </a>
+      </Link>
+      }
       <div className={styles['nav__centered-elements']}>
         <Link href="/">
           <a className="filter-shadow">
@@ -46,14 +52,14 @@ export const Navbar = (): JSX.Element => {
         {data?.me ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ margin: '0 1rem' }}>
-              👋 {data.me.user.username}
+              👋 {data.me.user && data.me.user.username}
             </div>
             <div style={{ marginRight: '1rem' }}>
               Cat: {data.me.selectedCat ? (
                 <>
                   <span>{data.me.selectedCat.name}</span>
                   <div>
-                    <Link href="select-cat">
+                    <Link href="/select-cat">
                       <a>
                         <button>Select Other</button>
                       </a>
@@ -64,7 +70,7 @@ export const Navbar = (): JSX.Element => {
                   <>
                     <span>None</span>
                     <div>
-                      <Link href="select-cat">
+                      <Link href="/select-cat">
                         <a>
                           <button>Select One</button>
                         </a>

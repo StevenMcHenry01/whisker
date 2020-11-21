@@ -1,0 +1,12 @@
+query GetMatches {
+  getMatches {
+    matches {
+      matchCatId
+      chatSessionId
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

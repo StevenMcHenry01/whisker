@@ -1,15 +1,14 @@
 // 3rd party imports
+import React from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
-import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useLoginMutation } from '../../../generated/graphql'
-import { validateEmailOrUsername } from '../../../validators/emailOrUsername'
-import { validatePassword } from '../../../validators/password'
-import { InputField } from '../shared/inputField'
 import Link from 'next/link'
 
 // My imports
+import { InputField } from '../shared/inputField'
+import { useLoginMutation } from '../../../generated/graphql'
+import { validatePassword } from '../../../validators/password'
 
 interface LoginFormProps { }
 interface FormValues {
@@ -25,6 +24,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ }) => {
 
   const onSubmit = async (values: FormValues) => {
     const response = await login({ variables: values })
+
     if (response.data?.login.user) {
       apolloClient.resetStore()
       router.push('/')
@@ -36,7 +36,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ }) => {
       <InputField
         errors={errors}
         register={formRegister}
-        validator={validateEmailOrUsername}
+        validator={{ required: true }}
         fieldName="emailOrUsername"
         placeholder="email or username"
         fieldLabel="Email or Username"

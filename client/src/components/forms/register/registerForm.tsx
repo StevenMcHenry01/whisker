@@ -3,9 +3,7 @@ import { useForm } from 'react-hook-form'
 import React from 'react'
 import { useRouter } from 'next/router'
 import { useRegisterMutation } from '../../../generated/graphql'
-import { validateEmail } from '../../../validators/email'
 import { validatePassword } from '../../../validators/password'
-import { validateUsername } from '../../../validators/username'
 import { InputField } from '../shared/inputField'
 import { useApolloClient } from '@apollo/client'
 
@@ -34,7 +32,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <InputField
         errors={errors}
-        validator={validateUsername}
+        validator={{ required: true }}
         register={formRegister}
         fieldName="username"
         placeholder="username"
@@ -43,7 +41,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ }) => {
 
       <InputField
         errors={errors}
-        validator={validateEmail}
+        validator={{ required: true }}
         register={formRegister}
         fieldName="email"
         placeholder="email"

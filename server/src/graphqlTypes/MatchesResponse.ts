@@ -1,11 +1,11 @@
 import { ObjectType, Field } from 'type-graphql'
 import { FieldError } from './FieldError'
-import { Message } from '../entities/Message'
+import { Match } from '../entities/Match'
 
 @ObjectType() // can return
-export class MessageResponse {
+export class MatchesResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[]
-  @Field(() => Message, { nullable: true })
-  message?: Message
+  @Field(() => [Match], { nullable: true })
+  matches?: Match[]
 }

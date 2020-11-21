@@ -5,11 +5,12 @@ import React from 'react'
 import { RegisterForm } from '../components/forms/register/registerForm'
 import { FormCard } from '../components/forms/shared/formCard'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
+import withApollo from '../config/apolloClient'
 
-const register: React.FC = ({ }) => {
+const register = ({ }) => {
   return (
     <MainLayout><FormCard header='Register'><RegisterForm /></FormCard></MainLayout>
   )
 }
 
-export default register
+export default withApollo()(register)

@@ -19,11 +19,24 @@ export type Query = {
   me?: Maybe<MeResponse>;
   getUserCats: CatsResponse;
   getCats: CatsResponse;
+  getCat: CatResponse;
+  getMatches: MatchesResponse;
+  getChatSession: SessionResponse;
 };
 
 
 export type QueryGetCatsArgs = {
   id?: Maybe<Scalars['Float']>;
+};
+
+
+export type QueryGetCatArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryGetChatSessionArgs = {
+  id: Scalars['Float'];
 };
 
 export type MeResponse = {
@@ -67,7 +80,8 @@ export type Match = {
   __typename?: 'Match';
   id: Scalars['Int'];
   createdAt: Scalars['String'];
-  match: Cat;
+  matchCatId: Scalars['Float'];
+  chatSessionId: Scalars['Float'];
   cat: Cat;
 };
 
@@ -115,6 +129,44 @@ export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type CatResponse = {
+  __typename?: 'CatResponse';
+  errors?: Maybe<Array<FieldError>>;
+  cat?: Maybe<Cat>;
+};
+
+export type MatchesResponse = {
+  __typename?: 'MatchesResponse';
+  errors?: Maybe<Array<FieldError>>;
+  matches?: Maybe<Array<Match>>;
+};
+
+export type SessionResponse = {
+  __typename?: 'SessionResponse';
+  errors?: Maybe<Array<FieldError>>;
+  chatSession?: Maybe<ChatSession>;
+};
+
+export type ChatSession = {
+  __typename?: 'ChatSession';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  catOneId: Scalars['Float'];
+  catTwoId: Scalars['Float'];
+  messages?: Maybe<Array<Message>>;
+};
+
+export type Message = {
+  __typename?: 'Message';
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  body: Scalars['String'];
+  senderId: Scalars['Float'];
+  chatSession: ChatSession;
 };
 
 export type Mutation = {
@@ -192,6 +244,7 @@ export type MutationDislikeCatArgs = {
 
 
 export type MutationUploadCatPhotoArgs = {
+  id: Scalars['Float'];
   file: Scalars['Upload'];
 };
 
@@ -220,12 +273,6 @@ export type RegisterInput = {
 export type LoginInput = {
   emailOrUsername: Scalars['String'];
   password: Scalars['String'];
-};
-
-export type CatResponse = {
-  __typename?: 'CatResponse';
-  errors?: Maybe<Array<FieldError>>;
-  cat?: Maybe<Cat>;
 };
 
 
@@ -266,30 +313,11 @@ export type DislikeResponse = {
 export type MessageResponse = {
   __typename?: 'MessageResponse';
   errors?: Maybe<Array<FieldError>>;
-  chatSession?: Maybe<ChatSession>;
-};
-
-export type ChatSession = {
-  __typename?: 'ChatSession';
-  id: Scalars['Int'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  catOneId: Scalars['Float'];
-  catTwoId: Scalars['Float'];
-  messages?: Maybe<Array<Message>>;
-};
-
-export type Message = {
-  __typename?: 'Message';
-  id: Scalars['Int'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  body: Scalars['String'];
-  chatSession: ChatSession;
+  message?: Maybe<Message>;
 };
 
 export type MessageInput = {
-  recieverId: Scalars['Float'];
+  receiverId: Scalars['Float'];
   body: Scalars['String'];
 };
 
@@ -484,25 +512,35 @@ export type RegisterMutation = (
   ) }
 );
 
-export type GetUserCatsQueryVariables = Exact<{ [key: string]: never; }>;
+export type SendMessageMutationVariables = Exact<{
+  body: Scalars['String'];
+  receiverId: Scalars['Float'];
+}>;
 
 
-export type GetUserCatsQuery = (
-  { __typename?: 'Query' }
-  & { getUserCats: (
-    { __typename?: 'CatsResponse' }
-    & { cats?: Maybe<Array<(
-      { __typename?: 'Cat' }
-      & Pick<Cat, 'bio' | 'name' | 'latitude' | 'longitude' | 'createdAt' | 'age' | 'sex' | 'breed' | 'id'>
-      & { pics: Array<(
-        { __typename?: 'Pic' }
-        & Pick<Pic, 'url'>
-      )> }
-    )>>, errors?: Maybe<Array<(
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { sendMessage: (
+    { __typename?: 'MessageResponse' }
+    & { message?: Maybe<(
+      { __typename?: 'Message' }
+      & Pick<Message, 'body' | 'senderId'>
+    )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
     )>> }
   ) }
+);
+
+export type UploadCatPhotoMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  id: Scalars['Float'];
+}>;
+
+
+export type UploadCatPhotoMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadCatPhoto'>
 );
 
 export type GetAllCatsQueryVariables = Exact<{
@@ -524,6 +562,93 @@ export type GetAllCatsQuery = (
         { __typename?: 'User' }
         & Pick<User, 'id' | 'username'>
       ) }
+    )>> }
+  ) }
+);
+
+export type GetCatQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type GetCatQuery = (
+  { __typename?: 'Query' }
+  & { getCat: (
+    { __typename?: 'CatResponse' }
+    & { cat?: Maybe<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'id' | 'name' | 'age' | 'bio' | 'breed' | 'sex'>
+      & { pics: Array<(
+        { __typename?: 'Pic' }
+        & Pick<Pic, 'url'>
+      )>, owner: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+        & { pics: Array<(
+          { __typename?: 'Pic' }
+          & Pick<Pic, 'url'>
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
+export type GetChatSessionQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type GetChatSessionQuery = (
+  { __typename?: 'Query' }
+  & { getChatSession: (
+    { __typename?: 'SessionResponse' }
+    & { chatSession?: Maybe<(
+      { __typename?: 'ChatSession' }
+      & { messages?: Maybe<Array<(
+        { __typename?: 'Message' }
+        & Pick<Message, 'body' | 'senderId'>
+      )>> }
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type GetMatchesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMatchesQuery = (
+  { __typename?: 'Query' }
+  & { getMatches: (
+    { __typename?: 'MatchesResponse' }
+    & { matches?: Maybe<Array<(
+      { __typename?: 'Match' }
+      & Pick<Match, 'matchCatId' | 'chatSessionId'>
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type GetUserCatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserCatsQuery = (
+  { __typename?: 'Query' }
+  & { getUserCats: (
+    { __typename?: 'CatsResponse' }
+    & { cats?: Maybe<Array<(
+      { __typename?: 'Cat' }
+      & Pick<Cat, 'bio' | 'name' | 'latitude' | 'longitude' | 'createdAt' | 'age' | 'sex' | 'breed' | 'id'>
+      & { pics: Array<(
+        { __typename?: 'Pic' }
+        & Pick<Pic, 'url'>
+      )> }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
     )>> }
   ) }
 );
@@ -939,22 +1064,12 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
-export const GetUserCatsDocument = gql`
-    query GetUserCats {
-  getUserCats {
-    cats {
-      bio
-      name
-      latitude
-      longitude
-      createdAt
-      age
-      sex
-      breed
-      id
-      pics {
-        url
-      }
+export const SendMessageDocument = gql`
+    mutation SendMessage($body: String!, $receiverId: Float!) {
+  sendMessage(options: {body: $body, receiverId: $receiverId}) {
+    message {
+      body
+      senderId
     }
     errors {
       field
@@ -963,31 +1078,63 @@ export const GetUserCatsDocument = gql`
   }
 }
     `;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
 
 /**
- * __useGetUserCatsQuery__
+ * __useSendMessageMutation__
  *
- * To run a query within a React component, call `useGetUserCatsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserCatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useGetUserCatsQuery({
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
  *   variables: {
+ *      body: // value for 'body'
+ *      receiverId: // value for 'receiverId'
  *   },
  * });
  */
-export function useGetUserCatsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
-        return Apollo.useQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, baseOptions);
       }
-export function useGetUserCatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
-          return Apollo.useLazyQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
-        }
-export type GetUserCatsQueryHookResult = ReturnType<typeof useGetUserCatsQuery>;
-export type GetUserCatsLazyQueryHookResult = ReturnType<typeof useGetUserCatsLazyQuery>;
-export type GetUserCatsQueryResult = Apollo.QueryResult<GetUserCatsQuery, GetUserCatsQueryVariables>;
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export const UploadCatPhotoDocument = gql`
+    mutation UploadCatPhoto($file: Upload!, $id: Float!) {
+  uploadCatPhoto(file: $file, id: $id)
+}
+    `;
+export type UploadCatPhotoMutationFn = Apollo.MutationFunction<UploadCatPhotoMutation, UploadCatPhotoMutationVariables>;
+
+/**
+ * __useUploadCatPhotoMutation__
+ *
+ * To run a mutation, you first call `useUploadCatPhotoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadCatPhotoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadCatPhotoMutation, { data, loading, error }] = useUploadCatPhotoMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUploadCatPhotoMutation(baseOptions?: Apollo.MutationHookOptions<UploadCatPhotoMutation, UploadCatPhotoMutationVariables>) {
+        return Apollo.useMutation<UploadCatPhotoMutation, UploadCatPhotoMutationVariables>(UploadCatPhotoDocument, baseOptions);
+      }
+export type UploadCatPhotoMutationHookResult = ReturnType<typeof useUploadCatPhotoMutation>;
+export type UploadCatPhotoMutationResult = Apollo.MutationResult<UploadCatPhotoMutation>;
+export type UploadCatPhotoMutationOptions = Apollo.BaseMutationOptions<UploadCatPhotoMutation, UploadCatPhotoMutationVariables>;
 export const GetAllCatsDocument = gql`
     query GetAllCats($id: Float) {
   getCats(id: $id) {
@@ -1038,6 +1185,185 @@ export function useGetAllCatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllCatsQueryHookResult = ReturnType<typeof useGetAllCatsQuery>;
 export type GetAllCatsLazyQueryHookResult = ReturnType<typeof useGetAllCatsLazyQuery>;
 export type GetAllCatsQueryResult = Apollo.QueryResult<GetAllCatsQuery, GetAllCatsQueryVariables>;
+export const GetCatDocument = gql`
+    query GetCat($id: Float!) {
+  getCat(id: $id) {
+    cat {
+      id
+      name
+      age
+      bio
+      breed
+      sex
+      pics {
+        url
+      }
+      owner {
+        username
+        pics {
+          url
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatQuery__
+ *
+ * To run a query within a React component, call `useGetCatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCatQuery(baseOptions: Apollo.QueryHookOptions<GetCatQuery, GetCatQueryVariables>) {
+        return Apollo.useQuery<GetCatQuery, GetCatQueryVariables>(GetCatDocument, baseOptions);
+      }
+export function useGetCatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatQuery, GetCatQueryVariables>) {
+          return Apollo.useLazyQuery<GetCatQuery, GetCatQueryVariables>(GetCatDocument, baseOptions);
+        }
+export type GetCatQueryHookResult = ReturnType<typeof useGetCatQuery>;
+export type GetCatLazyQueryHookResult = ReturnType<typeof useGetCatLazyQuery>;
+export type GetCatQueryResult = Apollo.QueryResult<GetCatQuery, GetCatQueryVariables>;
+export const GetChatSessionDocument = gql`
+    query GetChatSession($id: Float!) {
+  getChatSession(id: $id) {
+    chatSession {
+      messages {
+        body
+        senderId
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetChatSessionQuery__
+ *
+ * To run a query within a React component, call `useGetChatSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChatSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChatSessionQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetChatSessionQuery(baseOptions: Apollo.QueryHookOptions<GetChatSessionQuery, GetChatSessionQueryVariables>) {
+        return Apollo.useQuery<GetChatSessionQuery, GetChatSessionQueryVariables>(GetChatSessionDocument, baseOptions);
+      }
+export function useGetChatSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetChatSessionQuery, GetChatSessionQueryVariables>) {
+          return Apollo.useLazyQuery<GetChatSessionQuery, GetChatSessionQueryVariables>(GetChatSessionDocument, baseOptions);
+        }
+export type GetChatSessionQueryHookResult = ReturnType<typeof useGetChatSessionQuery>;
+export type GetChatSessionLazyQueryHookResult = ReturnType<typeof useGetChatSessionLazyQuery>;
+export type GetChatSessionQueryResult = Apollo.QueryResult<GetChatSessionQuery, GetChatSessionQueryVariables>;
+export const GetMatchesDocument = gql`
+    query GetMatches {
+  getMatches {
+    matches {
+      matchCatId
+      chatSessionId
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMatchesQuery__
+ *
+ * To run a query within a React component, call `useGetMatchesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMatchesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMatchesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMatchesQuery(baseOptions?: Apollo.QueryHookOptions<GetMatchesQuery, GetMatchesQueryVariables>) {
+        return Apollo.useQuery<GetMatchesQuery, GetMatchesQueryVariables>(GetMatchesDocument, baseOptions);
+      }
+export function useGetMatchesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMatchesQuery, GetMatchesQueryVariables>) {
+          return Apollo.useLazyQuery<GetMatchesQuery, GetMatchesQueryVariables>(GetMatchesDocument, baseOptions);
+        }
+export type GetMatchesQueryHookResult = ReturnType<typeof useGetMatchesQuery>;
+export type GetMatchesLazyQueryHookResult = ReturnType<typeof useGetMatchesLazyQuery>;
+export type GetMatchesQueryResult = Apollo.QueryResult<GetMatchesQuery, GetMatchesQueryVariables>;
+export const GetUserCatsDocument = gql`
+    query GetUserCats {
+  getUserCats {
+    cats {
+      bio
+      name
+      latitude
+      longitude
+      createdAt
+      age
+      sex
+      breed
+      id
+      pics {
+        url
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserCatsQuery__
+ *
+ * To run a query within a React component, call `useGetUserCatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserCatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserCatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserCatsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
+        return Apollo.useQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
+      }
+export function useGetUserCatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCatsQuery, GetUserCatsQueryVariables>) {
+          return Apollo.useLazyQuery<GetUserCatsQuery, GetUserCatsQueryVariables>(GetUserCatsDocument, baseOptions);
+        }
+export type GetUserCatsQueryHookResult = ReturnType<typeof useGetUserCatsQuery>;
+export type GetUserCatsLazyQueryHookResult = ReturnType<typeof useGetUserCatsLazyQuery>;
+export type GetUserCatsQueryResult = Apollo.QueryResult<GetUserCatsQuery, GetUserCatsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

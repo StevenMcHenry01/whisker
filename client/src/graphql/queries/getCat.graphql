@@ -1,0 +1,21 @@
+query GetCat($id: Float!) {
+  getCat(id: $id) {
+    cat {
+      id
+      name
+      age
+      bio
+      breed
+      sex
+      pics {
+        url
+      }
+      owner {
+        username
+        pics {
+          url
+        }
+      }
+    }
+  }
+}

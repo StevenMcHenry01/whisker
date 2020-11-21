@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useForgotPasswordMutation } from '../../../generated/graphql'
-import { validateEmail } from '../../../validators/email'
 import { InputField } from '../shared/inputField'
 import Link from 'next/link'
 
@@ -38,7 +37,7 @@ export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <InputField
         errors={errors}
-        validator={validateEmail}
+        validator={{ required: true }}
         register={formRegister}
         fieldName="email"
         placeholder="email"

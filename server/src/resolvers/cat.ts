@@ -20,9 +20,12 @@ import { Dislike } from '../entities/Dislike'
 import { Viewed } from '../entities/Viewed'
 import { DislikeResponse } from '../graphqlTypes/LikeResponse copy'
 import { ChatSession } from '../entities/ChatSession'
-import { GraphQLUpload, FileUpload } from 'graphql-upload'
+import { FileUpload, GraphQLUpload } from 'graphql-upload'
 import { createWriteStream } from 'fs'
 import mkdirp from 'mkdirp'
+import { MatchesResponse } from '../graphqlTypes/MatchesResponse'
+import { IdentityStore } from 'aws-sdk'
+import { cloudinary } from '../utils/cloudinary'
 
 @Resolver(Cat)
 export class CatResolver {
@@ -84,7 +87,6 @@ export class CatResolver {
   ): Promise<CatsResponse> {
     if (id) {
       const cat = await Cat.findOne(id)
-      console.log(cat)
       const viewed = await Viewed.find({
         where: {
           viewerCat: cat,
@@ -113,6 +115,23 @@ export class CatResolver {
         },
       ],
     }
+  }
+
+  // ~ GET CAT BY ID
+  @Query(() => CatResponse)
+  async getCat(@Arg('id') id: number): Promise<CatResponse> {
+    const cat = await Cat.findOne(id)
+    if (!cat) {
+      return {
+        errors: [
+          {
+            field: 'cat',
+            message: 'could not find cat with id: ' + id,
+          },
+        ],
+      }
+    }
+    return { cat }
   }
 
   // ~ EDIT CAT
@@ -188,28 +207,32 @@ export class CatResolver {
         })
         // match was found! awww
         if (matched) {
-          // create a match for both cats
-          const matchForLiker = new Match()
-          matchForLiker.match = likedCat
-          matchForLiker.cat = likerCat
-          this.connection.manager.save(matchForLiker)
-
-          const matchForLiked = new Match()
-          matchForLiked.match = likerCat
-          matchForLiked.cat = likedCat
-          this.connection.manager.save(matchForLiked)
-
           // create chat session for both cats
           const chatSession = new ChatSession()
           chatSession.catOneId = likerCat.id
           chatSession.catTwoId = likedCat.id
-          this.connection.manager.save(chatSession)
+          const newChat = await this.connection.manager.save(chatSession)
+
+          // create a match for both cats
+          const matchForLiker = new Match()
+          matchForLiker.matchCatId = likedCat.id
+          matchForLiker.cat = likerCat
+          matchForLiker.chatSessionId = newChat.id
+          this.connection.manager.save(matchForLiker)
+
+          const matchForLiked = new Match()
+          matchForLiked.matchCatId = likerCat.id
+          matchForLiked.cat = likedCat
+          matchForLiked.chatSessionId = newChat.id
+          this.connection.manager.save(matchForLiked)
 
           // save view for matched, liked cat
           const viewed = new Viewed()
           viewed.viewerCat = likedCat
           viewed.viewedId = likerCat.id
           this.connection.manager.save(viewed)
+
+          this.connection.manager.save(chatSession)
 
           // return the matched cat for displaying
           return {
@@ -285,34 +308,64 @@ export class CatResolver {
 
   // ~ UPLOAD PHOTO
   @Mutation(() => Boolean)
-  // @UseMiddleware(isAuth) // guarded resolver
+  @UseMiddleware(isAuth)
   async uploadCatPhoto(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
+    @Arg('id') id: number,
     @Ctx() { s3 }: ExpressRedisContext
   ): Promise<boolean> {
-    const cat = await Cat.findOne(1)
-    const { createReadStream, filename, mimetype } = await file
+    const cat = await Cat.findOne(id)
+    if (!cat) {
+      return false
+    }
+    const { createReadStream, filename, mimetype } = file
 
     const fileStream = createReadStream()
 
+    // upload to cloudinary
     try {
-      if (cat) {
-        const uploadParams = {
-          Bucket: 'whisker',
-          Key: `${cat.id}-${filename}`,
-          Body: fileStream,
-        }
-        const result = await s3.upload(uploadParams).promise()
-        const photo = new Pic()
-        photo.url = result.Location
-        photo.cat = cat
-        await this.connection.manager.save(photo)
-        return true
-      } else {
-        return false
-      }
-    } catch (e) {
+      fileStream.pipe(
+        cloudinary.v2.uploader.upload_stream(
+          {
+            folder: 'whisker',
+          },
+          async (error: any, result: any) => {
+            if (result) {
+              const photo = new Pic()
+              photo.url = result.secure_url
+              photo.cat = cat
+              await this.connection.manager.save(photo)
+              return true
+            }
+          }
+        )
+      )
+    } catch (error) {
+      console.error(error)
       return false
+    }
+    return false
+  }
+
+  // ~ GET MATCHES
+  @Query(() => MatchesResponse)
+  @UseMiddleware(isAuth) // guarded resolver
+  @UseMiddleware(isCatSelected) // guarded resolver
+  async getMatches(@Ctx() { req, redis }: ExpressRedisContext): Promise<MatchesResponse> {
+    const cat = await Cat.findOne(parseInt(req.session?.selectedCatId))
+
+    const matches = await Match.find({ where: { cat: cat } })
+
+    if (matches) {
+      return { matches }
+    }
+    return {
+      errors: [
+        {
+          field: 'matches',
+          message: 'There was an error getting matches.',
+        },
+      ],
     }
   }
 }

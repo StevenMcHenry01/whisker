@@ -3,7 +3,7 @@ import { Field, InputType, Int } from 'type-graphql'
 @InputType()
 export class MessageInput {
   @Field()
-  recieverId: number
+  receiverId: number
   @Field()
   body: string
 }

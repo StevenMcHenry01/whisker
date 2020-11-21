@@ -1,0 +1,3 @@
+mutation UploadCatPhoto($file: Upload!, $id: Float!) {
+  uploadCatPhoto(file: $file, id: $id)
+}

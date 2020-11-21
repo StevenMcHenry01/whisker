@@ -4,8 +4,9 @@ import React from 'react'
 // My imports
 import { CatList } from '../components/choose_cat/chooseCatList'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
+import withApollo from '../config/apolloClient'
 
-const selectCat: React.FC = ({ }) => {
+const selectCat = ({ }) => {
   return (
     <MainLayout>
       <CatList />
@@ -13,4 +14,4 @@ const selectCat: React.FC = ({ }) => {
   )
 }
 
-export default selectCat
+export default withApollo()(selectCat)

@@ -31,11 +31,12 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({ setPosition, posit
     let response
     if (choice === 'like') {
       response = await likeCat({ variables: { id: catId } })
+      if(response.data.likeCat.match) {
+        alert(`You matched with ${response.data.likeCat.match.name}!`)
+      }
     } else {
       response = await dislikeCat({ variables: { id: catId } })
     }
-
-    console.log(response)
 
     setPosition(position + 1)
   }

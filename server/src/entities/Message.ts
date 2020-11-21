@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Cat } from './Cat'
 import { ChatSession } from './ChatSession'
 
 @ObjectType()
@@ -32,6 +33,10 @@ export class Message extends BaseEntity {
   @Field()
   @Column()
   body!: string
+
+  @Field()
+  @Column()
+  senderId!: number
 
   @Field(() => ChatSession)
   @ManyToOne(() => ChatSession, (chatSession) => chatSession.messages, {

@@ -8,10 +8,6 @@ import { useForm } from 'react-hook-form'
 import { useCreateCatMutation } from '../../../generated/graphql'
 import { Upload } from '../../upload/upload'
 
-interface CreateCatFormProps {
-
-}
-
 interface FormValues {
   name: string
   bio?: string
@@ -20,14 +16,14 @@ interface FormValues {
   breed?: string
 }
 
-export const CreateCatForm: React.FC<CreateCatFormProps> = ({ }) => {
-  const { handleSubmit, errors, register, formState } = useForm()
+export const CreateCatForm = () => {
+  const { handleSubmit, errors, register } = useForm()
   const [createCat] = useCreateCatMutation()
   const router = useRouter()
   const apolloClient = useApolloClient()
 
   const onSubmit = async (values: FormValues) => {
-    const age = parseInt(values.age as unknown as string)
+    const age = parseInt((values.age as unknown) as string)
     const response = await createCat({ variables: { ...values, age: age } })
     if (response.data?.createCat?.cat) {
       apolloClient.resetStore()
@@ -37,19 +33,44 @@ export const CreateCatForm: React.FC<CreateCatFormProps> = ({ }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input name="name" placeholder="name" type="text" ref={register({ required: true })} />
-      {errors.name && "name is required"}
+      <input
+        name="name"
+        placeholder="name"
+        type="text"
+        ref={register({ required: true })}
+      />
+      {errors.name && 'name is required'}
       <div>
-        <input name="sex" type="radio" value="male" ref={register({ required: true })} />
+        <input
+          name="sex"
+          type="radio"
+          value="male"
+          ref={register({ required: true })}
+        />
         <label>male</label>
-        <input name="sex" type="radio" value="female" ref={register({ required: true })} />
+        <input
+          name="sex"
+          type="radio"
+          value="female"
+          ref={register({ required: true })}
+        />
         <label>female</label>
-        <input name="sex" type="radio" value="other" ref={register({ required: true })} />
+        <input
+          name="sex"
+          type="radio"
+          value="other"
+          ref={register({ required: true })}
+        />
         <label>other</label>
       </div>
       <div>
-        <input name="age" placeholder="age" type="text" ref={register({ required: true })} />
-        {errors.age && "age is required"}
+        <input
+          name="age"
+          placeholder="age"
+          type="text"
+          ref={register({ required: true })}
+        />
+        {errors.age && 'age is required'}
       </div>
       <div>
         <input name="breed" placeholder="breed" type="text" ref={register()} />

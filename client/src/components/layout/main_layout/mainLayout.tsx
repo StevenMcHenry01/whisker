@@ -10,7 +10,10 @@ interface MainLayoutProps {
   title?: string
 }
 
-export const MainLayout: React.FC = ({ children, title = 'whisker' }: MainLayoutProps) => {
+export const MainLayout = ({
+  children,
+  title = 'whisker',
+}: MainLayoutProps) => {
   return (
     <div className="main-layout">
       <Head>

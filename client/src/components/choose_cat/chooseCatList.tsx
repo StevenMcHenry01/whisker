@@ -7,11 +7,7 @@ import { ChooseCatPanel } from './chooseCatPanel'
 
 // My imports
 
-interface CatListProps {
-
-}
-
-export const CatList: React.FC<CatListProps> = ({ }) => {
+export const CatList = () => {
   const { data, loading, error } = useGetUserCatsQuery()
 
   if (loading) return <div>Loading...</div>
@@ -19,14 +15,23 @@ export const CatList: React.FC<CatListProps> = ({ }) => {
 
   return (
     <div>
-      <Link href='/create-cat'>
+      <Link href="/create-cat">
         <a>
           <Button>Create New Cat</Button>
         </a>
       </Link>
-      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '1rem' }}>
-        {data.getUserCats.cats.map(cat => {
-          return <ChooseCatPanel key={cat.id} name={cat.name} id={cat.id} photoUrl={cat.pics.length > 0 ? cat.pics[0].url : '/images/cat.jpeg'} />
+      <div className="grid">
+        {data?.getUserCats?.cats!.map((cat) => {
+          return (
+            <ChooseCatPanel
+              key={cat.id}
+              name={cat.name}
+              id={cat.id}
+              photoUrl={
+                cat.pics.length > 0 ? cat.pics[0].url : '/images/cat.jpeg'
+              }
+            />
+          )
         })}
       </div>
     </div>

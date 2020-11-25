@@ -6,7 +6,7 @@ import { SendResetEmailForm } from '../components/forms/reset_password/sendReset
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
 import withApollo from '../config/apolloClient'
 
-const SendResetEmail = ({ }) => {
+const SendResetEmail = () => {
   return (
     <MainLayout>
       <SendResetEmailForm />

@@ -22,6 +22,15 @@ export const validateRegister = (options: RegisterInput): [FieldError] | null =>
     ]
   }
 
+  if (options.username.length > 20) {
+    return [
+      {
+        field: 'username',
+        message: 'length cannot be greater than 20 characters.',
+      },
+    ]
+  }
+
   // check for username length
   if (options.username.includes('@')) {
     return [

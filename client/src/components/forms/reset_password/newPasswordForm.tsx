@@ -16,7 +16,7 @@ interface FormValues {
 export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
   token,
 }: NewPasswordFormProps) => {
-  const { handleSubmit, errors, register, formState, setError } = useForm()
+  const { handleSubmit, register, setError } = useForm()
   const [changePassword] = useChangePasswordMutation()
   const router = useRouter()
 
@@ -34,7 +34,12 @@ export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input name="newPassword" placeholder="new password" type="password" ref={register({ required: true })} />
+      <input
+        name="newPassword"
+        placeholder="new password"
+        type="password"
+        ref={register({ required: true })}
+      />
       <button type="submit">Change Password</button>
     </form>
   )

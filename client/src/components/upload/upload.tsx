@@ -1,42 +1,36 @@
 // 3rd party imports
-import React, { useState } from 'react'
+import React, { SetStateAction, useState } from 'react'
 import { useUploadCatPhotoMutation } from '../../generated/graphql'
 
 // My imports
 
-interface UploadProps {
-
-}
-
-export const Upload: React.FC<UploadProps> = ({ }) => {
-
+export const Upload = () => {
   const [uploadCatPhoto] = useUploadCatPhotoMutation()
-  const [fileInput, setFileInput] = useState('')
+  const [fileInput] = useState('')
   const [uploadedFile, setUploadedFile] = useState()
-  const [previewSource, setPreviewSource] = useState(null)
-  const [selectedFile, setSelectedFile] = useState('')
+  const [previewSource, setPreviewSource] = useState(undefined)
 
-  const handleFileInput = (e) => {
+  const handleFileInput = (e: any) => {
     const file = e.target.files[0]
     setUploadedFile(file)
     previewFile(file)
   }
 
-  const previewFile = (file) => {
+  const previewFile = (file: any) => {
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onloadend = () => {
-      setPreviewSource(reader.result)
+      setPreviewSource((reader.result as unknown) as SetStateAction<undefined>)
     }
   }
 
-  const handleSubmitFile = (e) => {
+  const handleSubmitFile = (e: any) => {
     e.preventDefault()
     if (!previewSource) return
     uploadImage(uploadedFile)
   }
 
-  const uploadImage = async (file) => {
+  const uploadImage = async (file: any) => {
     try {
       uploadCatPhoto({ variables: { file, id: 2 } })
     } catch (error) {
@@ -47,11 +41,20 @@ export const Upload: React.FC<UploadProps> = ({ }) => {
   return (
     <div>
       <form onSubmit={handleSubmitFile}>
-        <input type="file" name="image" onChange={handleFileInput} value={fileInput} />
+        <input
+          type="file"
+          name="image"
+          onChange={handleFileInput}
+          value={fileInput}
+        />
         <button type="submit">Submit</button>
       </form>
       {previewSource && (
-        <img src={previewSource} style={{ height: '300px' }} />
+        <img
+          src={previewSource}
+          style={{ height: '300px' }}
+          alt="preview upload"
+        />
       )}
     </div>
   )

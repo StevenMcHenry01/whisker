@@ -6,13 +6,12 @@ import Link from 'next/link'
 
 // My imports d
 
-interface SendResetEmailFormProps { }
 interface FormValues {
   email: string
 }
 
-export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
-  const { handleSubmit, errors, register, formState } = useForm()
+export const SendResetEmailForm = () => {
+  const { handleSubmit, register } = useForm()
   const [forgotPassword] = useForgotPasswordMutation()
   const [emailSent, setEmailSent] = useState(false)
 
@@ -34,7 +33,12 @@ export const SendResetEmailForm: React.FC<SendResetEmailFormProps> = ({ }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input name="email" placeholder="email to send reset link" type="email" ref={register({ required: true })} />
+      <input
+        name="email"
+        placeholder="email to send reset link"
+        type="email"
+        ref={register({ required: true })}
+      />
       <button type="submit">Change Password</button>
     </form>
   )

@@ -6,7 +6,7 @@ import { CatList } from '../components/choose_cat/chooseCatList'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
 import withApollo from '../config/apolloClient'
 
-const selectCat = ({ }) => {
+const selectCat = () => {
   return (
     <MainLayout>
       <CatList />

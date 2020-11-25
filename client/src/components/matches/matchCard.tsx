@@ -1,40 +1,76 @@
 // 3rd party imports
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 
 // My imports
-import { useGetCatQuery } from '../../generated/graphql'
+import { Cat, useGetCatQuery } from '../../generated/graphql'
 import { Button } from '../utils/buttons/button'
+import styles from '../choose_cat/ChooseCat.module.scss'
+import { Modal } from '../utils/modal/modal'
+import { CatProfile } from '../cat_profile/catProfile'
+import { Pic } from '../../generated/graphql'
 
 interface MatchCardProps {
   matchId: number
   chatSessionId: number
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({ matchId, chatSessionId }) => {
-
-  const { data, loading, error } = useGetCatQuery({ variables: { id: matchId } })
+export const MatchCard: React.FC<MatchCardProps> = ({
+  matchId,
+  chatSessionId,
+}) => {
+  const { data, loading, error } = useGetCatQuery({
+    variables: { id: matchId },
+  })
+  const [showModal, setShowModal] = useState(false)
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error</div>
 
   let picUrl
-  if (data.getCat.cat.pics.length !== 0) {
-    picUrl = data.getCat.cat.pics[0].url
+  let pics: Pic[] = []
+  if (data?.getCat?.cat?.pics.length !== 0) {
+    picUrl = data?.getCat?.cat?.pics[0].url as string
+    pics = data?.getCat?.cat?.pics as Pic[]
   } else {
     picUrl = '/images/cat.jpeg'
+    pics = [
+      {
+        url: '/images/cat.jpeg',
+        id: 0,
+        createdAt: 'date',
+        updatedAt: 'date',
+      },
+    ]
   }
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', width: '150px', border: '1px solid black', padding: '1rem', borderRadius: '10px', margin: '1rem'}}>
-      <h4>{data.getCat.cat.name}</h4>
-      <Image src={picUrl} width={100} height={100} />
-      <Link href={`/chat-session/${chatSessionId}?receiever=${data.getCat.cat.name}&receiverId=${data.getCat.cat.id}`}>
-        <a>
-          <Button>Send Message</Button>
-        </a>
-      </Link>
-    </div>
+    <>
+      <Modal showModal={showModal} setShowModal={setShowModal}>
+        <CatProfile
+          cat={data?.getCat.cat as Cat}
+          showModal={showModal}
+          pics={pics}
+        />
+      </Modal>
+      <div className={styles.choose_cat_card}>
+        <Image src={picUrl} alt="cat" layout="fill" />
+        <div className={styles.main_content}>
+          <p className={styles.name}>{data?.getCat?.cat?.name}</p>
+          <div className={styles.button_container}>
+            <Link
+              href={`/chat-session/${chatSessionId}?receiever=${data?.getCat?.cat?.name}&receiverId=${data?.getCat?.cat?.id}`}
+            >
+              <a style={{ marginRight: '1rem' }}>
+                <Button colorVariant="salmon">Message</Button>
+              </a>
+            </Link>
+
+            <Button onClick={() => setShowModal(true)}>View Profile</Button>
+          </div>
+        </div>
+      </div>
+    </>
   )
 }

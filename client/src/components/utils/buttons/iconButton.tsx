@@ -4,13 +4,33 @@ import React from 'react'
 // My imports
 import styles from './Button.module.scss'
 
-interface IconButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+interface IconButtonProps
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
   color?: string
   icon?: any
+  size?: number
 }
 
-export const IconButton: React.FC<IconButtonProps> = ({ color = "var(color-gray-1)", icon, ...buttonProps }) => {
+export const IconButton: React.FC<IconButtonProps> = ({
+  color = 'var(color-gray-1)',
+  icon,
+  size = 50,
+  ...buttonProps
+}) => {
   return (
-    <button className={styles.button} style={{ borderRadius: '100%', margin: '1rem 3rem', padding: '1rem', backgroundColor: color }}{...buttonProps}>{icon}</button>
+    <button
+      className={`${styles.button} ${styles.icon}`}
+      style={{
+        backgroundColor: color,
+        width: `${size}px`,
+        height: `${size}px`,
+      }}
+      {...buttonProps}
+    >
+      {icon}
+    </button>
   )
 }

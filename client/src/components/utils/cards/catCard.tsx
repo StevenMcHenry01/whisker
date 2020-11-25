@@ -10,9 +10,7 @@ interface CardProps {
   imageUrl?: string
 }
 
-export const Card: React.FC<CardProps> = ({
-  name, sex, breed, imageUrl
-}) => {
+export const Card: React.FC<CardProps> = ({ name, sex, breed, imageUrl }) => {
   return (
     <div className="card">
       <div className="thumb" style={{ backgroundImage: `url(${imageUrl})` }} />

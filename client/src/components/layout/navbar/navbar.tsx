@@ -1,5 +1,5 @@
 // 3rd party imports
-import React from 'react'
+import React, { useState } from 'react'
 import { useLogoutMutation, useMeQuery } from '../../../generated/graphql'
 import { isServer } from '../../../utils/isServer'
 import { useRouter } from 'next/router'
@@ -8,9 +8,11 @@ import Image from 'next/image'
 import { useApolloClient } from '@apollo/client'
 import { Button } from '../../utils/buttons/button'
 import styles from './Navbar.module.scss'
+import { CatSelected } from './catSelected'
+import { Modal } from '../../utils/modal/modal'
 
 export const Navbar = (): JSX.Element => {
-  const { data, loading } = useMeQuery({
+  const { data } = useMeQuery({
     skip: isServer(),
   })
 
@@ -18,9 +20,11 @@ export const Navbar = (): JSX.Element => {
 
   const router = useRouter()
 
-  const [logout, { loading: logoutLoading }] = useLogoutMutation()
+  const [logout] = useLogoutMutation()
+  const [showModal, setShowModal] = useState(false)
 
   const handleLogout = async () => {
+    setShowModal(false)
     const response = await logout()
     if (response.data?.logout) {
       apolloClient.resetStore()
@@ -30,12 +34,25 @@ export const Navbar = (): JSX.Element => {
 
   return (
     <nav className={styles.nav}>
-      {data?.me?.selectedCat && <Link href={`/matches/${data.me.selectedCat.id}`}>
-        <a>
-          <Button>View Matches</Button>
-        </a>
-      </Link>
-      }
+      <Modal showModal={showModal} setShowModal={setShowModal}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <p>Are you sure you want to Logout?</p>
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
+      </Modal>
+      {data?.me?.selectedCat && (
+        <Link href={`/matches/${data.me.selectedCat.id}`}>
+          <a>
+            <Button>View Matches</Button>
+          </a>
+        </Link>
+      )}
       <div className={styles['nav__centered-elements']}>
         <Link href="/">
           <a className="filter-shadow">
@@ -50,44 +67,17 @@ export const Navbar = (): JSX.Element => {
       </div>
       <div className={styles['nav__right-elements']}>
         {data?.me ? (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div style={{ margin: '0 1rem' }}>
-              👋 {data.me.user && data.me.user.username}
-            </div>
-            <div style={{ marginRight: '1rem' }}>
-              Cat: {data.me.selectedCat ? (
-                <>
-                  <span>{data.me.selectedCat.name}</span>
-                  <div>
-                    <Link href="/select-cat">
-                      <a>
-                        <button>Select Other</button>
-                      </a>
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                  <>
-                    <span>None</span>
-                    <div>
-                      <Link href="/select-cat">
-                        <a>
-                          <button>Select One</button>
-                        </a>
-                      </Link>
-                    </div>
-                  </>
-                )}
-            </div>
-            <Button onClick={handleLogout}>Logout</Button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <CatSelected data={data} />
+            <Button onClick={() => setShowModal(true)}>Logout</Button>
           </div>
         ) : (
-            <Link href="/login">
-              <a>
-                <Button>Login</Button>
-              </a>
-            </Link>
-          )}
+          <Link href="/login">
+            <a>
+              <Button>Login</Button>
+            </a>
+          </Link>
+        )}
       </div>
     </nav>
   )

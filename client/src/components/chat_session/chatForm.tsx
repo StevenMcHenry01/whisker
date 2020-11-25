@@ -9,8 +9,11 @@ interface ChatFormProps {
   setMessage: any
 }
 
-export const ChatForm: React.FC<ChatFormProps> = ({ handleSendMessage, message, setMessage }) => {
-
+export const ChatForm: React.FC<ChatFormProps> = ({
+  handleSendMessage,
+  message,
+  setMessage,
+}) => {
   const element: any = useRef()
 
   useEffect(() => {
@@ -20,8 +23,14 @@ export const ChatForm: React.FC<ChatFormProps> = ({ handleSendMessage, message, 
   }, [])
   return (
     <form onSubmit={handleSendMessage}>
-      <input type="text" value={message} onChange={e => setMessage(e.target.value)} />
-      <button ref={element} type="submit">Send message</button>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button ref={element} type="submit">
+        Send message
+      </button>
     </form>
   )
 }

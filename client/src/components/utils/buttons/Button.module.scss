@@ -2,9 +2,12 @@
   font-size: 1.2rem;
   color: var(--color-white);
   border-radius: 5px;
-  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
   border: none;
+  padding: 0.3rem 0.8rem;
   outline: none;
   position: relative;
   top: 0;
@@ -16,4 +19,9 @@
     cursor: pointer;
     top: -1px;
   }
+}
+
+.icon {
+  padding: 0;
+  border-radius: 100%;
 }

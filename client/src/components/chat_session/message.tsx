@@ -19,6 +19,10 @@ export const Message: React.FC<MessageProps> = ({ body, senderId }) => {
   if (error) return <div>Error</div>
 
   return (
-    <div style={{ color: data.me.selectedCat.id === senderId ? 'blue' : 'red' }}>{body}</div>
+    <div
+      style={{ color: data?.me?.selectedCat?.id === senderId ? 'blue' : 'red' }}
+    >
+      {body}
+    </div>
   )
 }

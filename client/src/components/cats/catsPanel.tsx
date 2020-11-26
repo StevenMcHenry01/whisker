@@ -47,7 +47,12 @@ export const CatsPanel = ({ me }: CatsPanelProps) => {
               name={data.getCats?.cats![position].name || 'name'}
               sex={data.getCats.cats![position].sex || 'sex'}
               breed={data.getCats.cats![position].breed || 'breed'}
-              imageUrl="/images/cat.jpeg"
+              age={data.getCats.cats![position].age || 0}
+              bio={data.getCats.cats![position].bio || 'No bio'}
+              ownerName={
+                data.getCats.cats![position].owner.username || 'ownerless'
+              }
+              pics={data.getCats.cats![position].pics}
             />
             <PurrHissPanel
               me={me}

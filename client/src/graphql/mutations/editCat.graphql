@@ -27,9 +27,6 @@ mutation EditCat(
       latitude
       longitude
       breed
-      owner {
-        username
-      }
     }
     errors {
       field

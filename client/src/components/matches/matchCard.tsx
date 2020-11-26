@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 
 // My imports
-import { Cat, useGetCatQuery } from '../../generated/graphql'
+import { useGetCatQuery } from '../../generated/graphql'
 import { Button } from '../utils/buttons/button'
 import styles from '../choose_cat/ChooseCat.module.scss'
 import { Modal } from '../utils/modal/modal'
@@ -45,32 +45,40 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     ]
   }
 
-  return (
-    <>
-      <Modal showModal={showModal} setShowModal={setShowModal}>
-        <CatProfile
-          cat={data?.getCat.cat as Cat}
-          showModal={showModal}
-          pics={pics}
-        />
-      </Modal>
-      <div className={styles.choose_cat_card}>
-        <Image src={picUrl} alt="cat" layout="fill" />
-        <div className={styles.main_content}>
-          <p className={styles.name}>{data?.getCat?.cat?.name}</p>
-          <div className={styles.button_container}>
-            <Link
-              href={`/chat-session/${chatSessionId}?receiever=${data?.getCat?.cat?.name}&receiverId=${data?.getCat?.cat?.id}`}
-            >
-              <a style={{ marginRight: '1rem' }}>
-                <Button colorVariant="salmon">Message</Button>
-              </a>
-            </Link>
+  if (data?.getCat?.cat) {
+    return (
+      <>
+        <Modal showModal={showModal} setShowModal={setShowModal}>
+          <CatProfile
+            name={data.getCat.cat.name}
+            age={data.getCat.cat.age}
+            breed={data.getCat.cat.breed}
+            sex={data.getCat.cat.sex}
+            bio={data.getCat.cat.bio}
+            ownerName={data.getCat.cat.owner.username}
+            showModal={showModal}
+            pics={pics}
+          />
+        </Modal>
+        <div className={styles.choose_cat_card}>
+          <Image src={picUrl} alt="cat" layout="fill" />
+          <div className={styles.main_content}>
+            <p className={styles.name}>{data?.getCat?.cat?.name}</p>
+            <div className={styles.button_container}>
+              <Link
+                href={`/chat-session/${chatSessionId}?receiever=${data?.getCat?.cat?.name}&receiverId=${data?.getCat?.cat?.id}`}
+              >
+                <a style={{ marginRight: '1rem' }}>
+                  <Button colorVariant="salmon">Message</Button>
+                </a>
+              </Link>
 
-            <Button onClick={() => setShowModal(true)}>View Profile</Button>
+              <Button onClick={() => setShowModal(true)}>View Profile</Button>
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  )
+      </>
+    )
+  }
+  return null
 }

@@ -24,6 +24,13 @@ import { ChatSession } from '../entities/ChatSession'
 import { MatchesResponse } from '../graphqlTypes/MatchesResponse'
 import { cloudinary } from '../utils/cloudinary'
 import { validateCat } from '../validators/validateCat'
+import { validateEditCat } from '../validators/validateEditCat'
+import { PicResponse } from '../graphqlTypes/PicResponse'
+import { IoTThingsGraph } from 'aws-sdk'
+import { UploadStream } from 'cloudinary'
+import { ReadStream } from 'typeorm/platform/PlatformTools'
+import { createReadStream } from 'fs'
+import { uploadToCloudinary } from '../utils/streamUpload'
 
 @Resolver(Cat)
 export class CatResolver {
@@ -138,9 +145,17 @@ export class CatResolver {
   @Mutation(() => CatResponse)
   @UseMiddleware(isAuth) // guarded resolver
   async editCat(@Arg('options') options: EditCatInput): Promise<CatResponse> {
+    const errors = validateEditCat(options)
+    if (errors) {
+      return { errors }
+    }
+
     let updatedCat
     try {
-      await Cat.update({ id: options.id }, { name: options.name })
+      await Cat.update(
+        { id: options.id },
+        { name: options.name, age: options.age, breed: options.breed, bio: options.bio }
+      )
       updatedCat = await Cat.findOne(options.id)
     } catch (e) {
       return {
@@ -298,43 +313,27 @@ export class CatResolver {
   }
 
   // ~ UPLOAD PHOTO
-  @Mutation(() => Boolean)
+  @Mutation(() => PicResponse)
   @UseMiddleware(isAuth)
-  async uploadCatPhoto(
-    @Arg('file', () => GraphQLUpload) file: FileUpload,
-    @Arg('id') id: number
-  ): Promise<boolean> {
-    const cat = await Cat.findOne(id)
-    if (!cat) {
-      return false
-    }
-    const { createReadStream } = file
-
-    const fileStream = createReadStream()
-
-    // upload to cloudinary
-    try {
-      fileStream.pipe(
-        cloudinary.v2.uploader.upload_stream(
+  async uploadCatPhoto(@Arg('file', () => GraphQLUpload) file: FileUpload): Promise<PicResponse> {
+    const uploadedFile = await uploadToCloudinary(file)
+    if (uploadedFile) {
+      const pic = new Pic()
+      pic.url = uploadedFile.secure_url
+      const createdPic = await this.connection.manager.save(pic)
+      return {
+        pic: createdPic,
+      }
+    } else {
+      return {
+        errors: [
           {
-            folder: 'whisker',
+            field: 'pic',
+            message: 'Error uploading picture.',
           },
-          async (error: any, result: any) => {
-            if (result) {
-              const photo = new Pic()
-              photo.url = result.secure_url
-              photo.cat = cat
-              await this.connection.manager.save(photo)
-              return true
-            }
-          }
-        )
-      )
-    } catch (error) {
-      console.error(error)
-      return false
+        ],
+      }
     }
-    return false
   }
 
   // ~ GET MATCHES

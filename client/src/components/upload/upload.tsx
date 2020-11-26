@@ -1,11 +1,13 @@
 // 3rd party imports
 import React, { SetStateAction, useState } from 'react'
 import { useUploadCatPhotoMutation } from '../../generated/graphql'
+import { Button } from '../utils/buttons/button'
+import Loading from '../utils/loading/loading'
 
 // My imports
 
 export const Upload = () => {
-  const [uploadCatPhoto] = useUploadCatPhotoMutation()
+  const [uploadCatPhoto, { loading }] = useUploadCatPhotoMutation()
   const [fileInput] = useState('')
   const [uploadedFile, setUploadedFile] = useState()
   const [previewSource, setPreviewSource] = useState(undefined)
@@ -32,23 +34,25 @@ export const Upload = () => {
 
   const uploadImage = async (file: any) => {
     try {
-      uploadCatPhoto({ variables: { file, id: 2 } })
+      const uploadedPhoto = await uploadCatPhoto({ variables: { file } })
+      console.log(uploadedPhoto)
     } catch (error) {
       console.error(error)
     }
   }
 
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div>
-      <form onSubmit={handleSubmitFile}>
-        <input
-          type="file"
-          name="image"
-          onChange={handleFileInput}
-          value={fileInput}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      <input
+        type="file"
+        name="image"
+        onChange={handleFileInput}
+        value={fileInput}
+      />
+      <Button onClick={handleSubmitFile}>Submit</Button>
       {previewSource && (
         <img
           src={previewSource}

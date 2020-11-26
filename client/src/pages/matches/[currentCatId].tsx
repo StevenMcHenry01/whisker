@@ -7,7 +7,7 @@ import { useMeQuery } from '../../generated/graphql'
 import { MatchesList } from '../../components/matches/matchesList'
 import withApollo from '../../config/apolloClient'
 
-const Matches = ({ }) => {
+const Matches = () => {
   const { data, loading, error } = useMeQuery()
 
   if (loading) return <div>Loading...</div>

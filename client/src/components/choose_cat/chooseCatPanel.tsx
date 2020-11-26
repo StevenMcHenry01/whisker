@@ -49,7 +49,7 @@ export const ChooseCatPanel: React.FC<ChooseCatPanelProps> = ({
           >
             Choose Me!
           </Button>
-          <Link href="/edit-cat">
+          <Link href={`/edit-cat/${id}`}>
             <a>
               <Button>Edit Cat</Button>
             </a>

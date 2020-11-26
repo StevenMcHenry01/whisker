@@ -4,6 +4,10 @@ export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> }
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -17,7 +21,6 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query'
-  hello: Scalars['String']
   me?: Maybe<MeResponse>
   getUserCats: CatsResponse
   getCats: CatsResponse
@@ -182,7 +185,7 @@ export type Mutation = {
   deleteCat: Scalars['Boolean']
   likeCat: LikeResponse
   dislikeCat: DislikeResponse
-  uploadCatPhoto: Scalars['Boolean']
+  uploadCatPhoto: PicResponse
   sendMessage: MessageResponse
 }
 
@@ -231,7 +234,6 @@ export type MutationDislikeCatArgs = {
 }
 
 export type MutationUploadCatPhotoArgs = {
-  id: Scalars['Float']
   file: Scalars['Upload']
 }
 
@@ -293,6 +295,12 @@ export type DislikeResponse = {
   __typename?: 'DislikeResponse'
   errors?: Maybe<Array<FieldError>>
   success?: Maybe<Scalars['Boolean']>
+}
+
+export type PicResponse = {
+  __typename?: 'PicResponse'
+  errors?: Maybe<Array<FieldError>>
+  pic?: Maybe<Pic>
 }
 
 export type MessageResponse = {
@@ -396,7 +404,7 @@ export type EditCatMutation = { __typename?: 'Mutation' } & {
         | 'latitude'
         | 'longitude'
         | 'breed'
-      > & { owner: { __typename?: 'User' } & Pick<User, 'username'> }
+      >
     >
     errors?: Maybe<
       Array<
@@ -490,13 +498,18 @@ export type SendMessageMutation = { __typename?: 'Mutation' } & {
 
 export type UploadCatPhotoMutationVariables = Exact<{
   file: Scalars['Upload']
-  id: Scalars['Float']
 }>
 
-export type UploadCatPhotoMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'uploadCatPhoto'
->
+export type UploadCatPhotoMutation = { __typename?: 'Mutation' } & {
+  uploadCatPhoto: { __typename?: 'PicResponse' } & {
+    pic?: Maybe<{ __typename?: 'Pic' } & Pick<Pic, 'id' | 'url'>>
+    errors?: Maybe<
+      Array<
+        { __typename?: 'FieldError' } & Pick<FieldError, 'field' | 'message'>
+      >
+    >
+  }
+}
 
 export type GetAllCatsQueryVariables = Exact<{
   id?: Maybe<Scalars['Float']>
@@ -535,7 +548,16 @@ export type GetCatQuery = { __typename?: 'Query' } & {
     cat?: Maybe<
       { __typename?: 'Cat' } & Pick<
         Cat,
-        'id' | 'name' | 'age' | 'bio' | 'breed' | 'sex'
+        | 'id'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'latitude'
+        | 'longitude'
+        | 'name'
+        | 'age'
+        | 'bio'
+        | 'breed'
+        | 'sex'
       > & {
           pics: Array<{ __typename?: 'Pic' } & Pick<Pic, 'url'>>
           owner: { __typename?: 'User' } & Pick<User, 'username'> & {
@@ -893,9 +915,6 @@ export const EditCatDocument = gql`
         latitude
         longitude
         breed
-        owner {
-          username
-        }
       }
       errors {
         field
@@ -1259,8 +1278,17 @@ export type SendMessageMutationOptions = Apollo.BaseMutationOptions<
   SendMessageMutationVariables
 >
 export const UploadCatPhotoDocument = gql`
-  mutation UploadCatPhoto($file: Upload!, $id: Float!) {
-    uploadCatPhoto(file: $file, id: $id)
+  mutation UploadCatPhoto($file: Upload!) {
+    uploadCatPhoto(file: $file) {
+      pic {
+        id
+        url
+      }
+      errors {
+        field
+        message
+      }
+    }
   }
 `
 export type UploadCatPhotoMutationFn = Apollo.MutationFunction<
@@ -1282,7 +1310,6 @@ export type UploadCatPhotoMutationFn = Apollo.MutationFunction<
  * const [uploadCatPhotoMutation, { data, loading, error }] = useUploadCatPhotoMutation({
  *   variables: {
  *      file: // value for 'file'
- *      id: // value for 'id'
  *   },
  * });
  */
@@ -1381,6 +1408,10 @@ export const GetCatDocument = gql`
     getCat(id: $id) {
       cat {
         id
+        createdAt
+        updatedAt
+        latitude
+        longitude
         name
         age
         bio
@@ -1676,3 +1707,13 @@ export function useMeLazyQuery(
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>
+
+export interface PossibleTypesResultData {
+  possibleTypes: {
+    [key: string]: string[]
+  }
+}
+const result: PossibleTypesResultData = {
+  possibleTypes: {},
+}
+export default result

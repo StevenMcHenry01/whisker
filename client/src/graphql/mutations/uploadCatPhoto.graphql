@@ -1,3 +1,12 @@
-mutation UploadCatPhoto($file: Upload!, $id: Float!) {
-  uploadCatPhoto(file: $file, id: $id)
+mutation UploadCatPhoto($file: Upload!) {
+  uploadCatPhoto(file: $file) {
+    pic {
+      id
+      url
+    }
+    errors {
+      field
+      message
+    }
+  }
 }

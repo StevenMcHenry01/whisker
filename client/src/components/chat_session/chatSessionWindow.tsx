@@ -1,6 +1,8 @@
 // 3rd party imports
 import { useApolloClient } from '@apollo/client'
 import React, { FormEvent, useState } from 'react'
+
+// My imports
 import {
   MeQuery,
   useGetChatSessionQuery,
@@ -8,8 +10,9 @@ import {
 } from '../../generated/graphql'
 import { ChatForm } from './chatForm'
 import { Message } from './message'
-
-// My imports
+import styles from './Chat.module.scss'
+import { MdRefresh } from 'react-icons/md'
+import { useSpring, animated } from 'react-spring'
 
 interface ChatSessionWindowProps {
   chatSessionId: string
@@ -23,6 +26,7 @@ export const ChatSessionWindow: React.FC<ChatSessionWindowProps> = ({
 }) => {
   const [message, setMessage] = useState('')
   const receiverIdInt = parseInt(receiverId)
+  const [props, set] = useSpring(() => ({ opacity: 0 }))
 
   const client = useApolloClient()
 
@@ -30,6 +34,14 @@ export const ChatSessionWindow: React.FC<ChatSessionWindowProps> = ({
     variables: { id: parseInt(chatSessionId) },
   })
   const [sendMessage] = useSendMessageMutation()
+
+  const handleRefresh = () => {
+    set({ opacity: 1 })
+    setTimeout(() => {
+      set({ opacity: 0 })
+    }, 2000)
+    client.cache.reset()
+  }
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -46,30 +58,32 @@ export const ChatSessionWindow: React.FC<ChatSessionWindowProps> = ({
   if (error) return <div>Error</div>
 
   return (
-    <div
-      id="scroll"
-      style={{
-        border: '1px solid black',
-        padding: '2rem',
-        maxHeight: '60vh',
-        overflow: 'scroll',
-      }}
-    >
-      <h3>Chat session</h3>
-      {data?.getChatSession?.chatSession?.messages!.map((message, index) => {
-        return (
-          <Message
-            key={index}
-            body={message.body}
-            senderId={message.senderId}
-          />
-        )
-      })}
-      <ChatForm
-        handleSendMessage={handleSendMessage}
-        message={message}
-        setMessage={setMessage}
-      />
+    <div>
+      <div style={{ display: 'flex' }}>
+        <h2 className={styles.title}>Chat session</h2>
+        <div className={styles.refresh_container}>
+          <animated.p style={props}>Refreshed!</animated.p>
+          <button className={styles.refresh} onClick={handleRefresh}>
+            <MdRefresh size="2rem" color="#f3d55e" />
+          </button>
+        </div>
+      </div>
+      <div id="scroll" className={styles.chat_window}>
+        {data?.getChatSession?.chatSession?.messages!.map((message, index) => {
+          return (
+            <Message
+              key={index}
+              body={message.body}
+              senderId={message.senderId}
+            />
+          )
+        })}
+        <ChatForm
+          handleSendMessage={handleSendMessage}
+          message={message}
+          setMessage={setMessage}
+        />
+      </div>
     </div>
   )
 }

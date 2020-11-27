@@ -271,6 +271,7 @@ export type CreateCatInput = {
   bio?: Maybe<Scalars['String']>
   latitude?: Maybe<Scalars['Float']>
   longitude?: Maybe<Scalars['Float']>
+  photoIds?: Maybe<Array<Scalars['Int']>>
 }
 
 export type EditCatInput = {
@@ -282,6 +283,7 @@ export type EditCatInput = {
   bio?: Maybe<Scalars['String']>
   latitude?: Maybe<Scalars['Float']>
   longitude?: Maybe<Scalars['Float']>
+  photoIds?: Maybe<Array<Scalars['Int']>>
 }
 
 export type LikeResponse = {
@@ -348,6 +350,7 @@ export type CreateCatMutationVariables = Exact<{
   breed?: Maybe<Scalars['String']>
   latitude?: Maybe<Scalars['Float']>
   longitude?: Maybe<Scalars['Float']>
+  photoIds?: Maybe<Array<Scalars['Int']>>
 }>
 
 export type CreateCatMutation = { __typename?: 'Mutation' } & {
@@ -759,6 +762,7 @@ export const CreateCatDocument = gql`
     $breed: String
     $latitude: Float
     $longitude: Float
+    $photoIds: [Int!]
   ) {
     createCat(
       options: {
@@ -769,6 +773,7 @@ export const CreateCatDocument = gql`
         breed: $breed
         latitude: $latitude
         longitude: $longitude
+        photoIds: $photoIds
       }
     ) {
       cat {
@@ -810,6 +815,7 @@ export type CreateCatMutationFn = Apollo.MutationFunction<
  *      breed: // value for 'breed'
  *      latitude: // value for 'latitude'
  *      longitude: // value for 'longitude'
+ *      photoIds: // value for 'photoIds'
  *   },
  * });
  */

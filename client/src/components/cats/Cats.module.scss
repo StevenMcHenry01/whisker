@@ -7,3 +7,18 @@
     margin: 1rem 3rem;
   }
 }
+
+.matchContainer {
+  position: fixed;
+  text-align: center;
+  border-radius: 2rem;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
+  padding: 2rem;
+  width: 60%;
+  left: 20%;
+  top: 30%;
+  z-index: 400;
+  background-color: var(--color-main-pink);
+  color: var(--color-white);
+  transition: all 0.2s ease-out;
+}

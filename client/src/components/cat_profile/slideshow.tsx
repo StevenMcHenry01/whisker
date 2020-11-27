@@ -16,7 +16,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({ pics }) => {
   return (
     <div className={styles.slide_container}>
       <div className={styles.pic_box}>
-        <img src={pics[currentPosition].url} alt="cat" />
+        <img src={pics[currentPosition].url} alt="cat" width="10rem" />
         <HiArrowCircleRight
           onClick={() =>
             setCurrentPosition((currentPosition) => currentPosition + 1)

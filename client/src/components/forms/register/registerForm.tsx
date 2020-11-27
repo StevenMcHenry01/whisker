@@ -9,6 +9,7 @@ import { FaUserAlt } from 'react-icons/fa'
 // my imports
 import styles from '../shared/Form.module.scss'
 import Link from 'next/link'
+import { validator } from './validator'
 
 interface FormValues {
   email: string
@@ -29,24 +30,7 @@ export const RegisterForm = () => {
     } catch (error) {
       console.log(error)
     }
-    if (response?.data?.register?.errors![0]?.field === 'username') {
-      setError('username', {
-        type: 'manual',
-        message: response.data.register.errors[0].message,
-      })
-    }
-    if (response?.data?.register?.errors![0]?.field === 'email') {
-      setError('email', {
-        type: 'manual',
-        message: response.data.register.errors[0].message,
-      })
-    }
-    if (response?.data?.register?.errors![0]?.field === 'password') {
-      setError('password', {
-        type: 'manual',
-        message: response.data.register.errors[0].message,
-      })
-    }
+    if (response?.data?.register?.errors) validator({ response, setError })
     if (response?.data?.register.user) {
       apolloClient.resetStore()
       router.push('/')

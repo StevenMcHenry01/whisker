@@ -4,6 +4,7 @@ import { useMeQuery } from '../../generated/graphql'
 import { isServer } from '../../utils/isServer'
 
 // My imports
+import styles from './Chat.module.scss'
 
 interface MessageProps {
   body: string
@@ -20,7 +21,9 @@ export const Message: React.FC<MessageProps> = ({ body, senderId }) => {
 
   return (
     <div
-      style={{ color: data?.me?.selectedCat?.id === senderId ? 'blue' : 'red' }}
+      className={`${styles.message} ${
+        data?.me?.selectedCat?.id === senderId ? styles.me : styles.them
+      }`}
     >
       {body}
     </div>

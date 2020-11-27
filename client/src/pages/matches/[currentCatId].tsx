@@ -6,9 +6,12 @@ import { MainLayout } from '../../components/layout/main_layout/mainLayout'
 import { useMeQuery } from '../../generated/graphql'
 import { MatchesList } from '../../components/matches/matchesList'
 import withApollo from '../../config/apolloClient'
+import { isServer } from '../../utils/isServer'
 
 const Matches = () => {
-  const { data, loading, error } = useMeQuery()
+  const { data, loading, error } = useMeQuery({
+    skip: isServer(),
+  })
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error</div>
@@ -20,11 +23,11 @@ const Matches = () => {
   return (
     <MainLayout>
       <div>
-        {<h2>{data.me.selectedCat.name}'s matches!</h2>}
+        {<h2>{data.me.selectedCat.name}&apos;s matches!</h2>}
         <MatchesList />
       </div>
     </MainLayout>
   )
 }
 
-export default withApollo()(Matches)
+export default withApollo({ ssr: true })(Matches)

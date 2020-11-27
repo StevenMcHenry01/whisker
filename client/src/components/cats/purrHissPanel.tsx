@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { IconButton } from '../utils/buttons/iconButton'
 import { AiFillLike } from 'react-icons/ai'
 import { AiFillDislike } from 'react-icons/ai'
+import { useSpring, animated } from 'react-spring'
 
 // My imports
 import {
@@ -32,6 +33,8 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
   const [dislikeCat] = useDislikeCatMutation()
   const [showModal, setShowModal] = useState(false)
   const [userModal, setUserModal] = useState(false)
+  const [matchName, setMatchName] = useState('')
+  const [props, set] = useSpring(() => ({ opacity: 0 }))
 
   const handleClick = async (choice: string) => {
     if (!me.me) {
@@ -49,7 +52,11 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
     if (choice === 'like') {
       response = await likeCat({ variables: { id: catId } })
       if (response?.data?.likeCat.match) {
-        alert(`You matched with ${response.data.likeCat.match.name}!`)
+        setMatchName(response.data.likeCat.match.name)
+        set({ opacity: 1 })
+        setTimeout(() => {
+          set({ opacity: 0 })
+        }, 2000)
       }
     } else {
       response = await dislikeCat({ variables: { id: catId } })
@@ -88,6 +95,9 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
           </div>
         </Modal>
       )}
+      <animated.div className={styles.matchContainer} style={props}>
+        <p>Congratulations! you matched with {matchName}!</p>
+      </animated.div>
       <div className={styles.purr_hiss}>
         <IconButton
           color="var(--color-error)"

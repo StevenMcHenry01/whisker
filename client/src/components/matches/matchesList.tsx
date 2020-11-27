@@ -12,7 +12,7 @@ export const MatchesList = () => {
   if (error) return <div>Error</div>
 
   return (
-    <>
+    <div className="grid">
       {data?.getMatches?.matches!.map((match) => {
         return (
           <MatchCard
@@ -22,6 +22,6 @@ export const MatchesList = () => {
           />
         )
       })}
-    </>
+    </div>
   )
 }

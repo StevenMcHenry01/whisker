@@ -1,0 +1,64 @@
+.chat_window {
+  max-width: 30rem;
+  background-color: rgb(247, 247, 247);
+  border-radius: 1rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  position: relative;
+  max-height: 60vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  @media only screen and (max-width: 640px) {
+    max-width: 20rem;
+  }
+  
+
+  
+}
+
+.title {
+  color: var(--color-main-pink);
+  width: 100%;
+  font-size: 2rem;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.refresh_container {
+  p {
+    margin-right: .5rem;
+    color: rgb(108, 167, 108);
+  }
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+.refresh {
+  background-color: transparent;
+  border-radius: 2rem;
+  transition: all .5s;
+  border: none;
+  outline: none;
+  &:hover {
+    background-color: rgb(240, 240, 240);
+    cursor: pointer;
+  }
+}
+
+.message {
+  margin-bottom: .5rem;
+  max-width: 90%;
+  overflow-wrap: break-word;
+  color: var(--color-white);
+  width: fit-content;
+  padding: .8rem;
+  border-radius: 1.5rem;
+}
+
+.me {
+  background-color: rgb(58, 108, 218);
+  margin-left: auto;
+}
+
+.them {
+background-color: rgb(201, 201, 201);
+}

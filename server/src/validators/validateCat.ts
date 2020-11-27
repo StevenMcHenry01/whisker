@@ -2,7 +2,7 @@ import { FieldError } from 'src/graphqlTypes/FieldError'
 import { CreateCatInput } from '../graphqlTypes/CreateCatInput'
 
 export const validateCat = (options: CreateCatInput): [FieldError] | null => {
-  if (options.sex !== 'male' || 'female' || 'other') {
+  if (options.sex !== 'male' && options.sex !== 'female' && options.sex !== 'other') {
     return [
       {
         field: 'sex',

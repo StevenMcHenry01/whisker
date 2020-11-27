@@ -15,6 +15,9 @@
   align-items: center;
   position: relative;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  @media only screen and (max-width: 640px) {
+    padding: .8rem;
+  }
 }
 
 .nav__centered-elements {
@@ -22,6 +25,21 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  @media only screen and (max-width: 640px) {
+    margin-bottom: .5rem;
+    width: 6rem;
+    position: relative;
+    left: 0;
+    transform: none;
+  }
+}
+
+.left_wrapper {
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 640px) {
+    flex-direction: column;
+  }
 }
 
 .nav__right-elements {

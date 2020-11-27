@@ -6,6 +6,7 @@ mutation CreateCat(
   $breed: String,
   $latitude: Float,
   $longitude: Float
+  $photoIds: [Int!]
 ) {
   createCat(options:{
     name: $name,
@@ -15,6 +16,7 @@ mutation CreateCat(
     breed: $breed,
     latitude: $latitude,
     longitude: $longitude
+    photoIds: $photoIds
     }) {
     cat {
       name

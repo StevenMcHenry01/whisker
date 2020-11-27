@@ -8,6 +8,7 @@ import styles from './Modal.module.scss'
 interface ModalProps {
   showModal: any
   setShowModal: any
+  top?: number
 }
 
 const Backdrop = ({ show, setShowModal }: any) =>
@@ -29,6 +30,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   showModal,
   setShowModal,
+  top = 30,
 }) => {
   return (
     <>
@@ -39,6 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
           transform: showModal ? 'translateY(0)' : 'translateY(-3rem)',
           opacity: showModal ? 1 : 0,
           visibility: showModal ? 'visible' : 'hidden',
+          top: `${top}%`,
         }}
       >
         <div

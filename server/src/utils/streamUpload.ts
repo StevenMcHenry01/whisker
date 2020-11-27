@@ -1,4 +1,4 @@
-import { UploadApiResponse, UploadStream } from 'cloudinary'
+import { UploadApiResponse } from 'cloudinary'
 import { FileUpload } from 'graphql-upload'
 import { cloudinary } from './cloudinary'
 
@@ -7,6 +7,7 @@ const streamUpload = (file: FileUpload): Promise<UploadApiResponse> => {
     const uploadStream = cloudinary.v2.uploader.upload_stream(
       {
         folder: 'whisker',
+        allowed_formats: ['jpg', 'jpeg', 'png'],
       },
       (error: any, result: any) => {
         if (result) {

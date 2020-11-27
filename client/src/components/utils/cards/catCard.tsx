@@ -37,7 +37,7 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <>
-      <Modal showModal={showModal} setShowModal={setShowModal}>
+      <Modal showModal={showModal} setShowModal={setShowModal} top={10}>
         <CatProfile
           name={name}
           age={age}

@@ -16,10 +16,14 @@ export const ChatForm: React.FC<ChatFormProps> = ({
 }) => {
   const element: any = useRef()
 
-  useEffect(() => {
+  const shift = () => {
     if (element) {
-      element.current.scrollIntoView()
+      element.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+  }
+
+  useEffect(() => {
+    shift()
   }, [])
   return (
     <form onSubmit={handleSendMessage}>
@@ -28,7 +32,7 @@ export const ChatForm: React.FC<ChatFormProps> = ({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button ref={element} type="submit">
+      <button onClick={() => shift()} ref={element} type="submit">
         Send message
       </button>
     </form>

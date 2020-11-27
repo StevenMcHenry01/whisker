@@ -18,4 +18,6 @@ export class EditCatInput {
   latitude: number
   @Field({ nullable: true })
   longitude: number
+  @Field(() => [Int], { nullable: true })
+  photoIds: [number]
 }

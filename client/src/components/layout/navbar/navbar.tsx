@@ -46,24 +46,26 @@ export const Navbar = (): JSX.Element => {
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </Modal>
-      {data?.me?.selectedCat && (
-        <Link href={`/matches/${data.me.selectedCat.id}`}>
-          <a>
-            <Button>View Matches</Button>
-          </a>
-        </Link>
-      )}
-      <div className={styles['nav__centered-elements']}>
-        <Link href="/">
-          <a className="filter-shadow">
-            <Image
-              src="/images/logo.png"
-              alt="whisker logo"
-              width={150}
-              height={65}
-            />
-          </a>
-        </Link>
+      <div className={styles.left_wrapper}>
+        <div className={styles['nav__centered-elements']}>
+          <Link href="/">
+            <a className="filter-shadow">
+              <Image
+                src="/images/logo.png"
+                alt="whisker logo"
+                width={150}
+                height={65}
+              />
+            </a>
+          </Link>
+        </div>
+        {data?.me?.selectedCat && (
+          <Link href={`/matches/${data.me.selectedCat.id}`}>
+            <a>
+              <Button>View Matches</Button>
+            </a>
+          </Link>
+        )}
       </div>
       <div className={styles['nav__right-elements']}>
         {data?.me ? (

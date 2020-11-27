@@ -8,7 +8,6 @@
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
   padding: 2rem;
   left: 10%;
-  top: 30%;
   transition: all 0.2s ease-out;
 }
 
@@ -35,6 +34,7 @@
 @media (min-width: 600px) {
   .modal {
     width: 50%;
+    max-width: 60rem;
     left: calc(50% - 25%);
   }
 }

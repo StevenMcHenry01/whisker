@@ -1,6 +1,6 @@
 // 3rd party imports
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql'
-import { getConnection, In, Not } from 'typeorm'
+import { Any, getConnection, In, Not } from 'typeorm'
 import { FileUpload, GraphQLUpload } from 'graphql-upload'
 
 // my imports
@@ -55,6 +55,8 @@ export class CatResolver {
       }
     }
 
+    const pics = await Pic.find({ id: Any(options.photoIds) })
+
     const errors = validateCat(options)
     if (errors) {
       return { errors }
@@ -65,9 +67,11 @@ export class CatResolver {
       newCat = new Cat()
       newCat.name = options.name
       newCat.breed = options.breed
+      newCat.bio = options.bio
       newCat.sex = options.sex
       newCat.age = options.age
       newCat.owner = user
+      newCat.pics = pics
       await this.connection.manager.save(newCat)
     } catch (e) {
       return {

@@ -18,6 +18,10 @@ const ChatSession = () => {
     skip: isServer(),
   })
 
+  if (data?.me === null) {
+    router.push('/login')
+  }
+
   return (
     <MainLayout>
       {loading ? (

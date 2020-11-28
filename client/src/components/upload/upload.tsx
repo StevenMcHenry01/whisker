@@ -86,6 +86,7 @@ export const Upload = ({
         onChange={handleFileInput}
         className={styles.inputfile}
         value={fileInput}
+        accept=".jpg,.jpeg,.gif,.heif,.heic,.svg,.webP"
       />
       <label
         htmlFor={inputName}

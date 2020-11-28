@@ -12,7 +12,7 @@ export const WelcomeMessage = () => {
         Welcome to <span className={styles.whisker}>Whisker!</span>
       </h1>
       <h3 className={styles.sub_heading}>
-        A place for your deperate cats to finally have a chance at love{' '}
+        A place for your desperate cats to finally have a chance at love{' '}
         <span>
           <AiFillHeart style={{ color: '#ef5d5d' }} />
         </span>

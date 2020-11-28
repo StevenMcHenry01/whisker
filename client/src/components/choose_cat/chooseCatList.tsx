@@ -1,20 +1,18 @@
 // 3rd party imports
 import Link from 'next/link'
 import React from 'react'
-import { useGetUserCatsQuery } from '../../generated/graphql'
+import { GetUserCatsQuery } from '../../generated/graphql'
 import { Button } from '../utils/buttons/button'
 import { Empty } from '../utils/empty/empty'
-import Loading from '../utils/loading/loading'
 import { ChooseCatPanel } from './chooseCatPanel'
 
 // My imports
 
-export const CatList = () => {
-  const { data, loading, error } = useGetUserCatsQuery()
+interface CatListProps {
+  data: GetUserCatsQuery
+}
 
-  if (loading) return <Loading />
-  if (error) return <div>Error</div>
-
+export const CatList = ({ data }: CatListProps) => {
   return (
     <div>
       <Link href="/create-cat">

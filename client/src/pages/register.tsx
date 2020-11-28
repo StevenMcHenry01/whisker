@@ -6,7 +6,7 @@ import { RegisterForm } from '../components/forms/register/registerForm'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
 import withApollo from '../config/apolloClient'
 
-const register = () => {
+const Register = () => {
   return (
     <MainLayout>
       <RegisterForm />
@@ -14,4 +14,4 @@ const register = () => {
   )
 }
 
-export default withApollo()(register)
+export default withApollo()(Register)

@@ -6,7 +6,7 @@ import { LoginForm } from '../components/forms/login/loginForm'
 import { MainLayout } from '../components/layout/main_layout/mainLayout'
 import withApollo from '../config/apolloClient'
 
-const login = () => {
+const Login = () => {
   return (
     <MainLayout>
       <LoginForm />
@@ -14,4 +14,4 @@ const login = () => {
   )
 }
 
-export default withApollo()(login)
+export default withApollo()(Login)

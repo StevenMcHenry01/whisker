@@ -13,13 +13,19 @@ const EditCat = () => {
   const router = useRouter()
   const { catId } = router.query
 
-  const { data, loading } = useGetCatQuery({
+  const { data, loading, error } = useGetCatQuery({
     variables: { id: parseInt(catId as string) },
   })
 
+  if (error?.message === 'not authenticated') router.push('/login')
+
   return (
     <MainLayout>
-      {loading ? <Loading /> : <CatEditForm cat={data?.getCat.cat as Cat} />}
+      {loading ? (
+        <Loading />
+      ) : (
+        data && <CatEditForm cat={data.getCat.cat as Cat} />
+      )}
     </MainLayout>
   )
 }

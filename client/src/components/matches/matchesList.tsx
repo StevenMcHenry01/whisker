@@ -2,17 +2,15 @@
 import React from 'react'
 
 // My imports
-import { useGetMatchesQuery } from '../../generated/graphql'
+import { GetMatchesQuery } from '../../generated/graphql'
 import { Empty } from '../utils/empty/empty'
-import Loading from '../utils/loading/loading'
 import { MatchCard } from './matchCard'
 
-export const MatchesList = () => {
-  const { data, loading, error } = useGetMatchesQuery()
+interface MatchesListProps {
+  data: GetMatchesQuery
+}
 
-  if (loading) return <Loading delay={0} />
-  if (error) return <div>Error</div>
-
+export const MatchesList = ({ data }: MatchesListProps) => {
   if (data?.getMatches?.matches?.length === 0) {
     return (
       <Empty>

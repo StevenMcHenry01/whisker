@@ -7,7 +7,7 @@ const streamUpload = (file: FileUpload): Promise<UploadApiResponse> => {
     const uploadStream = cloudinary.v2.uploader.upload_stream(
       {
         folder: 'whisker',
-        allowed_formats: ['jpg', 'jpeg', 'png'],
+        allowed_formats: ['jpg', 'jpeg', 'png', 'heif', 'gif', 'svg', 'webP'],
       },
       (error: any, result: any) => {
         if (result) {

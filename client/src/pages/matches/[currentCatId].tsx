@@ -3,29 +3,35 @@ import React from 'react'
 
 // My imports
 import { MainLayout } from '../../components/layout/main_layout/mainLayout'
-import { useMeQuery } from '../../generated/graphql'
+import { useGetMatchesQuery, useMeQuery } from '../../generated/graphql'
 import { MatchesList } from '../../components/matches/matchesList'
 import withApollo from '../../config/apolloClient'
 import { isServer } from '../../utils/isServer'
+import Loading from '../../components/utils/loading/loading'
+import { useRouter } from 'next/router'
 
 const Matches = () => {
-  const { data, loading, error } = useMeQuery({
+  const { data: meData, loading: meLoading } = useMeQuery({
     skip: isServer(),
   })
+  const { data, loading, error } = useGetMatchesQuery()
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error</div>
-
-  if (!data?.me?.selectedCat) {
-    return null
-  }
+  const router = useRouter()
+  if (error?.message === 'not authenticated') router.push('/login')
 
   return (
     <MainLayout>
-      <div>
-        {<h2>{data.me.selectedCat.name}&apos;s matches!</h2>}
-        <MatchesList />
-      </div>
+      {meLoading || loading ? (
+        <Loading />
+      ) : (
+        meData &&
+        data && (
+          <div>
+            <h2>{meData.me?.selectedCat?.name}&apos;s matches!</h2>
+            <MatchesList data={data} />
+          </div>
+        )
+      )}
     </MainLayout>
   )
 }

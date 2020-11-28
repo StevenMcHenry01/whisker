@@ -45,7 +45,6 @@ export const Card: React.FC<CardProps> = ({
           sex={sex}
           bio={bio}
           ownerName={ownerName}
-          showModal={showModal}
           pics={fallbackPics}
         />
       </Modal>

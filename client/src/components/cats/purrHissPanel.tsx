@@ -56,7 +56,7 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
         set({ opacity: 1 })
         setTimeout(() => {
           set({ opacity: 0 })
-        }, 2000)
+        }, 500)
       }
     } else {
       response = await dislikeCat({ variables: { id: catId } })
@@ -67,7 +67,7 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
   return (
     <>
       {userModal ? (
-        <Modal showModal={showModal} setShowModal={setShowModal}>
+        <Modal small showModal={showModal} setShowModal={setShowModal}>
           <div className="flex center">
             <p>Please Login first.</p>
             <div style={{ margin: '0 auto' }}>
@@ -80,7 +80,7 @@ export const PurrHissPanel: React.FC<PurrHissPanelProps> = ({
           </div>
         </Modal>
       ) : (
-        <Modal showModal={showModal} setShowModal={setShowModal}>
+        <Modal small showModal={showModal} setShowModal={setShowModal}>
           <div className="flex center">
             <p>Please selecte a cat first.</p>
             <div style={{ margin: '0 auto' }}>

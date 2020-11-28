@@ -149,6 +149,13 @@ export const CatEditForm = ({ cat }: CatEditFormProps) => {
       <button className={styles.submit_button} type="submit">
         Edit
       </button>
+      <button
+        style={{ margin: '-1rem auto 0 auto', backgroundColor: '#dd7474' }}
+        className={styles.submit_button}
+        onClick={() => router.push('/select-cat')}
+      >
+        Cancel
+      </button>
     </form>
   )
 }

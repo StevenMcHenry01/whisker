@@ -48,7 +48,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   if (data?.getCat?.cat) {
     return (
       <>
-        <Modal showModal={showModal} setShowModal={setShowModal}>
+        <Modal showModal={showModal} top={10} setShowModal={setShowModal}>
           <CatProfile
             name={data.getCat.cat.name}
             age={data.getCat.cat.age}
@@ -56,7 +56,6 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             sex={data.getCat.cat.sex}
             bio={data.getCat.cat.bio}
             ownerName={data.getCat.cat.owner.username}
-            showModal={showModal}
             pics={pics}
           />
         </Modal>

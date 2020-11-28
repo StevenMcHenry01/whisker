@@ -30,4 +30,4 @@ const Matches = () => {
   )
 }
 
-export default withApollo({ ssr: true })(Matches)
+export default withApollo()(Matches)

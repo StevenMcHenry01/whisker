@@ -27,14 +27,14 @@ export const Navbar = (): JSX.Element => {
     setShowModal(false)
     const response = await logout()
     if (response.data?.logout) {
-      apolloClient.resetStore()
+      await apolloClient.resetStore()
       router.push('/')
     }
   }
 
   return (
     <nav className={styles.nav}>
-      <Modal showModal={showModal} setShowModal={setShowModal}>
+      <Modal small showModal={showModal} setShowModal={setShowModal}>
         <div
           style={{
             display: 'flex',

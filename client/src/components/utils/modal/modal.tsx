@@ -9,6 +9,7 @@ interface ModalProps {
   showModal: any
   setShowModal: any
   top?: number
+  small?: boolean
 }
 
 const Backdrop = ({ show, setShowModal }: any) =>
@@ -31,12 +32,13 @@ export const Modal: React.FC<ModalProps> = ({
   showModal,
   setShowModal,
   top = 30,
+  small = false,
 }) => {
   return (
     <>
       <Backdrop show={showModal} setShowModal={setShowModal} />
       <div
-        className={styles.modal}
+        className={`${styles.modal} ${small && styles.small}`}
         style={{
           transform: showModal ? 'translateY(0)' : 'translateY(-3rem)',
           opacity: showModal ? 1 : 0,

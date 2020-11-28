@@ -11,12 +11,14 @@ interface UploadProps {
   uploadedPhotos: number[]
   setUploadedPhotos: React.Dispatch<React.SetStateAction<number[]>>
   inputName: string
+  setUnUploaded: any
 }
 
 export const Upload = ({
   uploadedPhotos,
   setUploadedPhotos,
   inputName,
+  setUnUploaded,
 }: UploadProps) => {
   const [labelValue, setLabelValue] = useState('Find image')
   const [uploadButtonValue, setUploadButtonValue] = useState('Upload')
@@ -30,6 +32,7 @@ export const Upload = ({
     const file = e.target.files[0]
     setUploadedFile(file)
     previewFile(file)
+    setUnUploaded(true)
   }
 
   const previewFile = (file: any) => {
@@ -55,6 +58,7 @@ export const Upload = ({
       }
       if (uploadedPhoto.data?.uploadCatPhoto?.pic) {
         setError(false)
+        setUnUploaded(false)
         setUploadedPhotos([
           ...uploadedPhotos,
           uploadedPhoto.data.uploadCatPhoto.pic.id,
@@ -72,7 +76,9 @@ export const Upload = ({
     return <Loading delay={0} />
   }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <input
         type="file"
         name={inputName}
@@ -93,7 +99,7 @@ export const Upload = ({
         {previewSource && (
           <img
             src={previewSource}
-            style={{ height: '4rem', width: '4rem', display: 'block' }}
+            className={styles.image_preview}
             alt="preview upload"
           />
         )}
@@ -111,6 +117,7 @@ export const Upload = ({
             labelValue === 'Success!' ? '#935c70' : 'var(--color-main-salmon)',
           fontSize: '.6rem',
           pointerEvents: labelValue === 'Success!' ? 'none' : 'auto',
+          marginTop: '.5rem',
         }}
       >
         {uploadButtonValue}

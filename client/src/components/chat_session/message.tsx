@@ -2,6 +2,7 @@
 import React from 'react'
 import { useMeQuery } from '../../generated/graphql'
 import { isServer } from '../../utils/isServer'
+import Loading from '../utils/loading/loading'
 
 // My imports
 import styles from './Chat.module.scss'
@@ -16,7 +17,7 @@ export const Message: React.FC<MessageProps> = ({ body, senderId }) => {
     skip: isServer(),
   })
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loading />
   if (error) return <div>Error</div>
 
   return (

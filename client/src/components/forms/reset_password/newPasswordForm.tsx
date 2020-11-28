@@ -5,6 +5,8 @@ import { useChangePasswordMutation } from '../../../generated/graphql'
 import { useRouter } from 'next/router'
 
 // My imports
+import styles from '../shared/Form.module.scss'
+import { Button } from '../../utils/buttons/button'
 
 interface NewPasswordFormProps {
   token: string
@@ -16,7 +18,7 @@ interface FormValues {
 export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
   token,
 }: NewPasswordFormProps) => {
-  const { handleSubmit, register, setError } = useForm()
+  const { handleSubmit, register, setError, errors } = useForm()
   const [changePassword] = useChangePasswordMutation()
   const router = useRouter()
 
@@ -35,12 +37,16 @@ export const NewPasswordForm: React.FC<NewPasswordFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input
+        className={styles.input_container}
         name="newPassword"
         placeholder="new password"
         type="password"
         ref={register({ required: true })}
       />
-      <button type="submit">Change Password</button>
+      {errors.newPassword && (
+        <p className={styles.error_message}>{errors.newPassword.message}</p>
+      )}
+      <Button type="submit">Change Password</Button>
     </form>
   )
 }

@@ -16,7 +16,6 @@ interface CatProfileProps {
   bio?: string | null | undefined
   ownerName?: string
   pics: { url: string }[]
-  showModal: boolean
 }
 
 export const CatProfile: React.FC<CatProfileProps> = ({
@@ -27,35 +26,30 @@ export const CatProfile: React.FC<CatProfileProps> = ({
   bio,
   pics,
   ownerName,
-  showModal,
 }) => {
   return (
     <div className={styles.container}>
-      {showModal ? (
-        <>
-          <Slideshow pics={pics} />
-          <div className={styles.content}>
-            <h3>
-              {name[0].toUpperCase() + name.substr(1, name.length)}, {age}
-            </h3>
-            <h4>
-              <GiWhiteCat />
-              &nbsp;
-              {breed || 'No breed'}
-            </h4>
-            <h4>
-              <FaTransgenderAlt />
-              &nbsp;{sex || 'No sex'}
-            </h4>
-            <h4>
-              <BsFillPersonFill />
-              &nbsp;owned by {ownerName || 'ownerless'}
-            </h4>
-            <div className={styles.break} />
-            <p>{bio || 'No bio'}</p>
-          </div>
-        </>
-      ) : null}
+      <Slideshow pics={pics} />
+      <div className={styles.content}>
+        <h3>
+          {name[0].toUpperCase() + name.substr(1, name.length)}, {age}
+        </h3>
+        <h4>
+          <GiWhiteCat />
+          &nbsp;
+          {breed || 'No breed'}
+        </h4>
+        <h4>
+          <FaTransgenderAlt />
+          &nbsp;{sex || 'No sex'}
+        </h4>
+        <h4>
+          <BsFillPersonFill />
+          &nbsp;owned by {ownerName || 'ownerless'}
+        </h4>
+        <div className={styles.break} />
+        <p>{bio || 'No bio'}</p>
+      </div>
     </div>
   )
 }

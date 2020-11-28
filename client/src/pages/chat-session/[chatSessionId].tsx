@@ -8,6 +8,7 @@ import { MainLayout } from '../../components/layout/main_layout/mainLayout'
 import { ChatSessionWindow } from '../../components/chat_session/chatSessionWindow'
 import { MeQuery, useMeQuery } from '../../generated/graphql'
 import { isServer } from '../../utils/isServer'
+import Loading from '../../components/utils/loading/loading'
 
 const ChatSession = () => {
   const router = useRouter()
@@ -19,12 +20,15 @@ const ChatSession = () => {
 
   return (
     <MainLayout>
-      {loading && <div>Loading...</div>}
-      <ChatSessionWindow
-        chatSessionId={chatSessionId as string}
-        me={data as MeQuery}
-        receiverId={receiverId as string}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <ChatSessionWindow
+          chatSessionId={chatSessionId as string}
+          me={data as MeQuery}
+          receiverId={receiverId as string}
+        />
+      )}
     </MainLayout>
   )
 }

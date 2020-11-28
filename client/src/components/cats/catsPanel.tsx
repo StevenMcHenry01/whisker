@@ -7,6 +7,7 @@ import { isServer } from '../../utils/isServer'
 import { PurrHissPanel } from './purrHissPanel'
 import { Card } from '../utils/cards/catCard'
 import Loading from '../utils/loading/loading'
+import { Empty } from '../utils/empty/empty'
 
 interface CatsPanelProps {
   me: MeQuery
@@ -29,18 +30,10 @@ export const CatsPanel = ({ me }: CatsPanelProps) => {
     return (
       <>
         {!data.getCats?.cats![position] ? (
-          <div
-            className="card"
-            style={{ textAlign: 'center', padding: '2rem', marginTop: '3rem' }}
-          >
+          <Empty>
             <p>There doesn&apos;t seem to be any more</p>
             <p>cats in your area.</p>
-            <img
-              style={{ marginTop: '2rem' }}
-              src={'/images/sad.svg'}
-              alt="sad face"
-            />
-          </div>
+          </Empty>
         ) : (
           <div>
             <Card

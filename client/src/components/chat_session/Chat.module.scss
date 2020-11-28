@@ -11,9 +11,6 @@
   @media only screen and (max-width: 640px) {
     max-width: 20rem;
   }
-  
-
-  
 }
 
 .title {
@@ -31,9 +28,11 @@
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  align-items: center;
 }
 .refresh {
   background-color: transparent;
+  height: 2.5rem;
   border-radius: 2rem;
   transition: all .5s;
   border: none;
@@ -62,3 +61,26 @@
 .them {
 background-color: rgb(201, 201, 201);
 }
+
+.chat_input {
+  background-color: transparent;
+  border-radius: 2rem;
+  padding: .5rem;
+  border: 1px solid lightgray;
+  outline: none;
+  flex: 1;
+  margin-right: .5rem;
+}
+
+.send_button {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  border-radius: 50rem;
+  border: none;
+  background-color:  rgb(58, 108, 218);
+  color: var(--color-white);
+  cursor: pointer;
+  padding: 2px;
+}
+

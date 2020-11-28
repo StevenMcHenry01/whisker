@@ -1,7 +1,9 @@
 // 3rd party imports
 import React, { useEffect, useRef } from 'react'
+import { BiUpArrowAlt } from 'react-icons/bi'
 
 // My imports
+import styles from './Chat.module.scss'
 
 interface ChatFormProps {
   handleSendMessage: any
@@ -26,14 +28,23 @@ export const ChatForm: React.FC<ChatFormProps> = ({
     shift()
   }, [])
   return (
-    <form onSubmit={handleSendMessage}>
+    <form
+      onSubmit={handleSendMessage}
+      style={{ marginTop: '1.5rem', display: 'flex' }}
+    >
       <input
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        className={styles.chat_input}
       />
-      <button onClick={() => shift()} ref={element} type="submit">
-        Send message
+      <button
+        className={styles.send_button}
+        onClick={() => shift()}
+        ref={element}
+        type="submit"
+      >
+        <BiUpArrowAlt size="1.6rem" />
       </button>
     </form>
   )

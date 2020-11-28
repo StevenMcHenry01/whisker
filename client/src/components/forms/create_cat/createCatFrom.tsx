@@ -29,8 +29,15 @@ export const CreateCatForm = () => {
   const [createCat] = useCreateCatMutation()
   const router = useRouter()
   const apolloClient = useApolloClient()
+  const [unUploaded, setUnUploaded] = useState(false)
+  const [unUploadedError, setUnUploadedError] = useState('')
 
   const onSubmit = async (values: FormValues) => {
+    if (unUploaded) {
+      setUnUploadedError('Please upload you files first!')
+      return
+    }
+    setUnUploadedError('')
     const age = parseInt((values.age as unknown) as string)
     let response
     try {
@@ -46,8 +53,6 @@ export const CreateCatForm = () => {
       router.push('/select-cat')
     }
   }
-
-  console.log(errors)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form_card}>
@@ -96,18 +101,24 @@ export const CreateCatForm = () => {
           uploadedPhotos={uploadedPhotos}
           setUploadedPhotos={setUploadedPhotos}
           inputName="file1"
+          setUnUploaded={setUnUploaded}
         />
         <Upload
           uploadedPhotos={uploadedPhotos}
           setUploadedPhotos={setUploadedPhotos}
           inputName="file2"
+          setUnUploaded={setUnUploaded}
         />
         <Upload
           uploadedPhotos={uploadedPhotos}
           setUploadedPhotos={setUploadedPhotos}
           inputName="file3"
+          setUnUploaded={setUnUploaded}
         />
       </div>
+      {unUploadedError && (
+        <p style={{ color: 'var(--color-error)' }}>{unUploadedError}</p>
+      )}
       <div style={{ marginTop: '1rem' }}>
         <Button colorVariant="pink" type="submit">
           Create Cat

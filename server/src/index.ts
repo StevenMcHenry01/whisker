@@ -21,6 +21,9 @@ const main = async () => {
 
   const app = express()
 
+  // needed for nginx proxy and cookies
+  app.set('trust proxy', 1)
+
   // ~ CORS
   app.use(
     cors({
@@ -28,6 +31,11 @@ const main = async () => {
       credentials: true,
     })
   )
+
+  // ~ Test endpoint
+  app.get('/', (req, res) => {
+    res.send('Hello from api')
+  })
 
   // ~ Image upload middleware
   app.use('/graphql', graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))

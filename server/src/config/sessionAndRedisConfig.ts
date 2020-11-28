@@ -17,7 +17,7 @@ export const sessionConfig = {
     httpOnly: true, // cannot access cookie via frontend js
     secure: __prod__, // only works with https
     sameSite: 'lax', // csrf
-    domain: __prod__ ? '.whisker.site' : undefined,
+    domain: __prod__ ? '.whisker.live' : undefined,
   },
   saveUninitialized: false,
   secret: process.env.SESSSION_SECRET as string,
